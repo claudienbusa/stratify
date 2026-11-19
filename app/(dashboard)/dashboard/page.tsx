@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 
 const PLATFORMS = [
@@ -9,6 +9,31 @@ const PLATFORMS = [
   { id: "instagram", label: "Instagram" },
   { id: "tiktok", label: "TikTok" },
 ];
+
+const HISTORY_KEY = "stratify_history";
+const MAX_HISTORY = 20;
+
+type HistoryItem = {
+  id: string;
+  date: string;
+  mode: "simple" | "campaign";
+  preview: string;
+  results?: Record<string, unknown>;
+  campaign?: {
+    campaignTitle?: string;
+    strategy?: string;
+    days?: Day[];
+  };
+};
+
+type Day = {
+  day: number;
+  theme: string;
+  platform: string;
+  post: string;
+  goal?: string;
+  bestTime?: string;
+};
 
 function formatResult(data: unknown): string {
   if (typeof data === "string") return data;
@@ -21,14 +46,18 @@ function formatResult(data: unknown): string {
   return JSON.stringify(data, null, 2);
 }
 
-type Day = {
-  day: number;
-  theme: string;
-  platform: string;
-  post: string;
-  goal?: string;
-  bestTime?: string;
-};
+function loadHistory(): HistoryItem[] {
+  try {
+    const raw = localStorage.getItem(HISTORY_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveHistory(items: HistoryItem[]) {
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(items.slice(0, MAX_HISTORY)));
+}
 
 export default function DashboardPage() {
   const [mode, setMode] = useState<"simple" | "campaign">("simple");
@@ -44,11 +73,23 @@ export default function DashboardPage() {
   } | null>(null);
   const [error, setError] = useState("");
   const [copied, setCopied] = useState<string | null>(null);
+  const [history, setHistory] = useState<HistoryItem[]>([]);
+  const [showHistory, setShowHistory] = useState(false);
+
+  useEffect(() => {
+    setHistory(loadHistory());
+  }, []);
 
   const toggle = (id: string) => {
     setSelected((prev) =>
       prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id]
     );
+  };
+
+  const pushHistory = (item: HistoryItem) => {
+    const next = [item, ...loadHistory()].slice(0, MAX_HISTORY);
+    saveHistory(next);
+    setHistory(next);
   };
 
   const generate = async () => {
@@ -70,6 +111,13 @@ export default function DashboardPage() {
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Erreur");
         setCampaign(data.campaign);
+        pushHistory({
+          id: Date.now().toString(),
+          date: new Date().toLocaleString(),
+          mode: "campaign",
+          preview: text.slice(0, 80) + (text.length > 80 ? "..." : ""),
+          campaign: data.campaign,
+        });
       } else {
         const res = await fetch("/api/generate", {
           method: "POST",
@@ -79,6 +127,13 @@ export default function DashboardPage() {
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Erreur");
         setResults(data.results);
+        pushHistory({
+          id: Date.now().toString(),
+          date: new Date().toLocaleString(),
+          mode: "simple",
+          preview: text.slice(0, 80) + (text.length > 80 ? "..." : ""),
+          results: data.results,
+        });
       }
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Erreur");
@@ -93,18 +148,72 @@ export default function DashboardPage() {
     setTimeout(() => setCopied(null), 2000);
   };
 
+  const openHistoryItem = (item: HistoryItem) => {
+    setMode(item.mode);
+    setResults(item.results || null);
+    setCampaign(item.campaign || null);
+    setShowHistory(false);
+  };
+
+  const clearHistory = () => {
+    localStorage.removeItem(HISTORY_KEY);
+    setHistory([]);
+  };
+
   return (
     <div className="min-h-screen bg-slate-950 text-white">
       <header className="border-b border-slate-800">
         <div className="max-w-3xl mx-auto px-4 h-14 flex items-center justify-between">
           <Link href="/" className="font-bold text-violet-400">
-  Stratify
-</Link>
-          <span className="text-xs text-slate-500">AI Content Strategy</span>
+            Stratify
+          </Link>
+          <button
+            type="button"
+            onClick={() => setShowHistory((v) => !v)}
+            className="text-xs px-3 py-1.5 rounded-lg border border-slate-700 hover:bg-slate-900"
+          >
+            Historique ({history.length})
+          </button>
         </div>
       </header>
 
       <main className="max-w-3xl mx-auto px-4 py-8">
+        {showHistory && (
+          <div className="mb-8 rounded-xl border border-slate-700 bg-slate-900 p-4">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="font-semibold">Historique local</h2>
+              <button
+                type="button"
+                onClick={clearHistory}
+                className="text-xs text-slate-500 hover:text-red-400"
+              >
+                Tout effacer
+              </button>
+            </div>
+            {history.length === 0 ? (
+              <p className="text-sm text-slate-500">Aucune generation pour le moment.</p>
+            ) : (
+              <ul className="space-y-2 max-h-64 overflow-auto">
+                {history.map((item) => (
+                  <li key={item.id}>
+                    <button
+                      type="button"
+                      onClick={() => openHistoryItem(item)}
+                      className="w-full text-left rounded-lg border border-slate-800 hover:border-violet-700 px-3 py-2 text-sm"
+                    >
+                      <div className="flex justify-between gap-2 text-xs text-slate-500 mb-1">
+                        <span>{item.mode === "campaign" ? "Campagne" : "Simple"}</span>
+                        <span>{item.date}</span>
+                      </div>
+                      <div className="text-slate-300 truncate">{item.preview}</div>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
+
         <h1 className="text-2xl font-bold mb-1">Studio</h1>
         <p className="text-slate-400 text-sm mb-6">
           1 contenu source → posts ou campagne 7 jours
@@ -116,9 +225,7 @@ export default function DashboardPage() {
             onClick={() => setMode("simple")}
             className={
               "px-4 py-2 rounded-lg text-sm font-medium transition " +
-              (mode === "simple"
-                ? "bg-violet-600 text-white"
-                : "text-slate-400 hover:text-white")
+              (mode === "simple" ? "bg-violet-600 text-white" : "text-slate-400 hover:text-white")
             }
           >
             Mode Simple
@@ -128,9 +235,7 @@ export default function DashboardPage() {
             onClick={() => setMode("campaign")}
             className={
               "px-4 py-2 rounded-lg text-sm font-medium transition " +
-              (mode === "campaign"
-                ? "bg-violet-600 text-white"
-                : "text-slate-400 hover:text-white")
+              (mode === "campaign" ? "bg-violet-600 text-white" : "text-slate-400 hover:text-white")
             }
           >
             Campagne 7 jours
@@ -143,9 +248,7 @@ export default function DashboardPage() {
           value={text}
           onChange={(e) => setText(e.target.value)}
         />
-        <div className="text-xs text-slate-500 mt-2 mb-4">
-          {text.length} caracteres
-        </div>
+        <div className="text-xs text-slate-500 mt-2 mb-4">{text.length} caracteres</div>
 
         {mode === "simple" && (
           <div className="flex flex-wrap gap-2 mb-4">
@@ -169,9 +272,7 @@ export default function DashboardPage() {
 
         {mode === "campaign" && (
           <div className="mb-4">
-            <label className="text-sm text-slate-400 block mb-2">
-              Objectif de la campagne
-            </label>
+            <label className="text-sm text-slate-400 block mb-2">Objectif de la campagne</label>
             <select
               value={objective}
               onChange={(e) => setObjective(e.target.value)}
@@ -208,18 +309,13 @@ export default function DashboardPage() {
             {Object.entries(results).map(([platform, data]) => {
               const content = formatResult(data);
               return (
-                <div
-                  key={platform}
-                  className="rounded-xl border border-slate-700 bg-slate-900/80 p-5"
-                >
+                <div key={platform} className="rounded-xl border border-slate-700 bg-slate-900/80 p-5">
                   <div className="flex items-center justify-between mb-3">
-                    <span className="capitalize font-medium text-violet-300">
-                      {platform}
-                    </span>
+                    <span className="capitalize font-medium text-violet-300">{platform}</span>
                     <button
                       type="button"
                       onClick={() => copy(platform, content)}
-                      className="text-xs px-3 py-1.5 rounded-lg border border-slate-600 hover:bg-slate-800 transition"
+                      className="text-xs px-3 py-1.5 rounded-lg border border-slate-600 hover:bg-slate-800"
                     >
                       {copied === platform ? "Copie !" : "Copier"}
                     </button>
@@ -236,18 +332,13 @@ export default function DashboardPage() {
         {campaign && mode === "campaign" && (
           <div className="mt-10 space-y-4">
             <div className="rounded-xl border border-violet-900/50 bg-violet-950/30 p-5">
-              <h2 className="text-xl font-bold">
-                {campaign.campaignTitle || "Campagne 7 jours"}
-              </h2>
+              <h2 className="text-xl font-bold">{campaign.campaignTitle || "Campagne 7 jours"}</h2>
               {campaign.strategy && (
                 <p className="text-slate-400 text-sm mt-2">{campaign.strategy}</p>
               )}
             </div>
             {(campaign.days || []).map((day) => (
-              <div
-                key={day.day}
-                className="rounded-xl border border-slate-700 bg-slate-900/80 p-5"
-              >
+              <div key={day.day} className="rounded-xl border border-slate-700 bg-slate-900/80 p-5">
                 <div className="flex justify-between items-start gap-3 mb-3">
                   <div>
                     <div className="font-medium">
