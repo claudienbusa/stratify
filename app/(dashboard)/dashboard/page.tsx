@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 const PLATFORMS = [
   { id: "linkedin", label: "LinkedIn" },
@@ -96,9 +97,9 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-slate-950 text-white">
       <header className="border-b border-slate-800">
         <div className="max-w-3xl mx-auto px-4 h-14 flex items-center justify-between">
-          <a href="/" className="font-bold text-violet-400">
-            Stratify
-          </a>
+          <Link href="/" className="font-bold text-violet-400">
+  Stratify
+</Link>
           <span className="text-xs text-slate-500">AI Content Strategy</span>
         </div>
       </header>
