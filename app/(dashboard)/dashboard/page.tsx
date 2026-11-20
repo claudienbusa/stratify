@@ -381,25 +381,53 @@ export default function DashboardPage() {
         )}
 
         {(results || campaign) && (
-          <div className="mt-6 flex justify-end gap-2">
-            <button
-              type="button"
-              onClick={generate}
-              disabled={loading}
-              className="text-sm px-4 py-2 rounded-lg border border-slate-600 hover:bg-slate-800 disabled:opacity-50"
-            >
-              Nouvelle version
-            </button>
-            <button
-              type="button"
-              onClick={copyAll}
-              className="text-sm px-4 py-2 rounded-lg border border-violet-600 text-violet-300 hover:bg-violet-950"
-            >
-              {copied === "all" ? "Tout copié !" : "Copier tout"}
-            </button>
-          </div>
-        )}
-
+  <div className="mt-6 flex justify-end gap-2 flex-wrap">
+    <button
+      type="button"
+      onClick={generate}
+      disabled={loading}
+      className="text-sm px-4 py-2 rounded-lg border border-slate-600 hover:bg-slate-800 disabled:opacity-50"
+    >
+      Nouvelle version
+    </button>
+    <button
+      type="button"
+      onClick={copyAll}
+      className="text-sm px-4 py-2 rounded-lg border border-violet-600 text-violet-300 hover:bg-violet-950"
+    >
+      {copied === "all" ? "Tout copié !" : "Copier tout"}
+    </button>
+    <button
+      type="button"
+      onClick={() => {
+        let content = "";
+        if (results) {
+          content = Object.entries(results)
+            .map(([platform, data]) => {
+              const { text } = formatResult(data);
+              return `=== ${platform.toUpperCase()} ===\n${text}`;
+            })
+            .join("\n\n");
+        } else if (campaign) {
+          content = `${campaign.campaignTitle || "Campagne"}\n${campaign.strategy || ""}\n\n`;
+          content += (campaign.days || [])
+            .map((d) => `=== JOUR ${d.day} — ${d.theme} (${d.platform}) ===\n${d.post}`)
+            .join("\n\n");
+        }
+        const blob = new Blob([content], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "stratify-export.txt";
+        a.click();
+        URL.revokeObjectURL(url);
+      }}
+      className="text-sm px-4 py-2 rounded-lg border border-slate-600 hover:bg-slate-800"
+    >
+      Télécharger .txt
+    </button>
+  </div>
+)}
         {results && mode === "simple" && (
           <div className="mt-6 space-y-4">
             <h2 className="text-lg font-semibold">Resultats</h2>
