@@ -14,12 +14,12 @@ export async function POST(req: Request) {
 
     const goals: Record<string, string> = {
       engagement: "maximize likes, comments and shares",
-      authority: "build expertise and credibility",
+      authority: "build expertise, credibility and thought leadership",
       conversion: "drive clicks, leads or sales",
     };
 
-    const voiceInstruction = brandVoice
-      ? `\nBrand Voice to strictly follow: ${brandVoice}`
+    const voice = brandVoice
+      ? `\nBrand voice to follow strictly: "${brandVoice}".`
       : "";
 
     const completion = await openai.chat.completions.create({
@@ -28,30 +28,35 @@ export async function POST(req: Request) {
         {
           role: "system",
           content: `You are Stratify, an expert content strategist.
-Create a 7-day social media campaign from one source content.
-Goal: ${goals[objective] || goals.engagement}${voiceInstruction}
+Create a complete 7-day social media campaign from one source content.
+Main goal: ${goals[objective] || goals.engagement}${voice}
 
-Respond ONLY with valid JSON:
+Respond ONLY with valid JSON in this exact shape:
 {
   "campaignTitle": "string",
-  "strategy": "short strategy summary",
+  "strategy": "1-2 sentence strategy summary",
   "days": [
     {
       "day": 1,
       "theme": "Teaser",
       "platform": "linkedin",
-      "post": "full post ready to publish",
-      "goal": "why this post",
+      "post": "full ready-to-publish post",
+      "goal": "why this post exists",
       "bestTime": "Tue 9am"
     }
   ]
 }
 
 Rules:
-- Day 1 teaser, 2-3 value, 4 social proof, 5 deep dive, 6 question, 7 CTA
+- Exactly 7 days
+- Day 1: Teaser
+- Days 2-3: Value
+- Day 4: Social proof or story
+- Day 5: Deep dive / education
+- Day 6: Question or engagement
+- Day 7: Clear CTA
 - Alternate platforms: linkedin, twitter, instagram, tiktok
-- Every post must be ready to publish
-- Exactly 7 days in the array
+- Every "post" must be ready to publish
 - Write in the SAME LANGUAGE as the source content`,
         },
         { role: "user", content: "Source content:\n\n" + text },
@@ -60,9 +65,7 @@ Rules:
       temperature: 0.7,
     });
 
-    const campaign = JSON.parse(
-      completion.choices[0].message.content || "{}"
-    );
+    const campaign = JSON.parse(completion.choices[0].message.content || "{}");
     return NextResponse.json({ success: true, campaign });
   } catch (e) {
     console.error(e);
