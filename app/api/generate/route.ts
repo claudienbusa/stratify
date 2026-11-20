@@ -12,8 +12,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "TEXT_TOO_SHORT" }, { status: 400 });
     }
 
-    const voiceInstruction = brandVoice
-      ? `\n\nBrand Voice to strictly follow: ${brandVoice}\nAdapt tone, vocabulary, and style accordingly while keeping the core message.`
+    const voice = brandVoice
+      ? `\n\nBrand voice to follow strictly: "${brandVoice}". Adapt tone, vocabulary and rhythm accordingly.`
       : "";
 
     const completion = await openai.chat.completions.create({
@@ -21,46 +21,40 @@ export async function POST(req: Request) {
       messages: [
         {
           role: "system",
-          content: `You are Stratify, an elite social media strategist and copywriter.
+          content: `You are Stratify, a world-class social media strategist and copywriter.
 
-Transform the source content into high-performing posts for the requested platforms only: ${platforms.join(", ")}.${voiceInstruction}
+Your job is to turn one source content into high-performing, ready-to-publish posts for the requested platforms: ${platforms.join(", ")}.${voice}
 
-Rules:
-- Write in the SAME LANGUAGE as the source content
-- Each post must be ready to publish (no placeholders)
-- Strong hook in the first line
-- Clear value, concrete language, no generic fluff
-- Natural CTA when relevant
-- Respect platform style and length
+Core principles:
+- Write in the EXACT same language as the source
+- Every post must be ready to copy-paste and publish
+- Start with a strong hook
+- Deliver clear value
+- Use concrete language
+- End with a natural call-to-action when relevant
 
-Platform guidelines:
-- linkedin: professional, storytelling or insight, 1200-1800 chars max, short paragraphs, optional 3-5 hashtags
-- twitter: punchy thread of 3-6 tweets OR one strong post under 280 chars; number tweets if thread
+Platform rules:
+- linkedin: professional insight or story, short paragraphs, 800-1600 characters, max 5 hashtags
+- twitter: either one sharp post (<280 chars) or a numbered thread of 3-6 tweets
 - instagram: scroll-stopping first line, emotional or visual language, line breaks, 5-10 hashtags at the end
-- tiktok: spoken-style script with hook (0-3s), body, CTA; short sentences
+- tiktok: spoken script with Hook (0-3s), Body, CTA. Short sentences.
 
-Respond ONLY with valid JSON, for example:
+Respond ONLY with valid JSON. Only include the platforms that were requested.
+Example shape:
 {
   "linkedin": { "post": "..." },
-  "twitter": { "thread": ["tweet1", "tweet2"] },
+  "twitter": { "thread": ["1/ ...", "2/ ..."] },
   "instagram": { "caption": "..." },
   "tiktok": { "script": "..." }
-}
-Only include keys for: ${platforms.join(", ")}.`,
+}`,
         },
-        {
-          role: "user",
-          content: `Source content:\n\n${text}`,
-        },
+        { role: "user", content: `Source content:\n\n${text}` },
       ],
       response_format: { type: "json_object" },
       temperature: 0.7,
     });
 
-    const results = JSON.parse(
-      completion.choices[0].message.content || "{}"
-    );
-
+    const results = JSON.parse(completion.choices[0].message.content || "{}");
     return NextResponse.json({ success: true, results });
   } catch (e) {
     console.error(e);
