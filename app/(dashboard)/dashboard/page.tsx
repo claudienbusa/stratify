@@ -79,7 +79,7 @@ export default function DashboardPage() {
   const [copied, setCopied] = useState<string | null>(null);
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [showHistory, setShowHistory] = useState(false);
-
+const [dark, setDark] = useState(true);
   useEffect(() => {
     setHistory(loadHistory());
   }, []);
@@ -193,24 +193,31 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white">
+    <div className={`min-h-screen ${dark ? "bg-slate-950 text-white" : "bg-white text-slate-900"}`}>
       <header className="border-b border-slate-800">
         <div className="max-w-3xl mx-auto px-4 h-14 flex items-center justify-between">
           <Link href="/" className="font-bold text-violet-400">
             Stratify
           </Link>
           <div className="flex items-center gap-3">
-            <span className="text-xs text-slate-500">
-              {history.length} génération{history.length > 1 ? "s" : ""}
-            </span>
-            <button
-              type="button"
-              onClick={() => setShowHistory((v) => !v)}
-              className="text-xs px-3 py-1.5 rounded-lg border border-slate-700 hover:bg-slate-900"
-            >
-              Historique
-            </button>
-          </div>
+  <span className="text-xs text-slate-500">
+    {history.length} génération{history.length > 1 ? "s" : ""}
+  </span>
+  <button
+    type="button"
+    onClick={() => setDark((d) => !d)}
+    className="text-xs px-3 py-1.5 rounded-lg border border-slate-700 hover:bg-slate-900"
+  >
+    {dark ? "Clair" : "Sombre"}
+  </button>
+  <button
+    type="button"
+    onClick={() => setShowHistory((v) => !v)}
+    className="text-xs px-3 py-1.5 rounded-lg border border-slate-700 hover:bg-slate-900"
+  >
+    Historique
+  </button>
+</div>
         </div>
       </header>
 
