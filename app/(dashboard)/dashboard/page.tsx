@@ -233,8 +233,8 @@ export default function DashboardPage() {
           </Link>
           <div className="flex items-center gap-3">
             <span className="text-xs text-slate-500">
-              {history.length} génération{history.length > 1 ? "s" : ""}
-            </span>
+  {history.length} gen. · {history.filter(h => h.mode === "simple").length} simple · {history.filter(h => h.mode === "campaign").length} camp.
+</span>
             <button
               type="button"
               onClick={() => setDark((d) => !d)}
