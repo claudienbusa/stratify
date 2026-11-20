@@ -18,6 +18,8 @@ type HistoryItem = {
   date: string;
   mode: "simple" | "campaign";
   preview: string;
+  brandVoice?: string;
+  objective?: string;
   results?: Record<string, unknown>;
   campaign?: {
     campaignTitle?: string;
@@ -117,6 +119,8 @@ export default function DashboardPage() {
           date: new Date().toLocaleString(),
           mode: "campaign",
           preview: text.slice(0, 80) + (text.length > 80 ? "..." : ""),
+          brandVoice,
+          objective,
           campaign: data.campaign,
         });
       } else {
@@ -133,6 +137,7 @@ export default function DashboardPage() {
           date: new Date().toLocaleString(),
           mode: "simple",
           preview: text.slice(0, 80) + (text.length > 80 ? "..." : ""),
+          brandVoice,
           results: data.results,
         });
       }
@@ -158,10 +163,7 @@ export default function DashboardPage() {
     } else if (campaign) {
       content = `${campaign.campaignTitle || "Campagne 7 jours"}\n${campaign.strategy || ""}\n\n`;
       content += (campaign.days || [])
-        .map(
-          (d) =>
-            `=== JOUR ${d.day} — ${d.theme} (${d.platform}) ===\n${d.post}`
-        )
+        .map((d) => `=== JOUR ${d.day} — ${d.theme} (${d.platform}) ===\n${d.post}`)
         .join("\n\n");
     }
     if (content) {
@@ -175,6 +177,8 @@ export default function DashboardPage() {
     setMode(item.mode);
     setResults(item.results || null);
     setCampaign(item.campaign || null);
+    setBrandVoice(item.brandVoice || "");
+    if (item.objective) setObjective(item.objective);
     setShowHistory(false);
   };
 
@@ -225,10 +229,18 @@ export default function DashboardPage() {
                       className="w-full text-left rounded-lg border border-slate-800 hover:border-violet-700 px-3 py-2 text-sm"
                     >
                       <div className="flex justify-between gap-2 text-xs text-slate-500 mb-1">
-                        <span>{item.mode === "campaign" ? "Campagne" : "Simple"}</span>
+                        <span>
+                          {item.mode === "campaign" ? "Campagne" : "Simple"}
+                          {item.objective ? ` · ${item.objective}` : ""}
+                        </span>
                         <span>{item.date}</span>
                       </div>
                       <div className="text-slate-300 truncate">{item.preview}</div>
+                      {item.brandVoice && (
+                        <div className="text-xs text-violet-400 mt-1 truncate">
+                          Voice: {item.brandVoice}
+                        </div>
+                      )}
                     </button>
                   </li>
                 ))}
