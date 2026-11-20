@@ -174,13 +174,14 @@ export default function DashboardPage() {
   };
 
   const openHistoryItem = (item: HistoryItem) => {
-    setMode(item.mode);
-    setResults(item.results || null);
-    setCampaign(item.campaign || null);
-    setBrandVoice(item.brandVoice || "");
-    if (item.objective) setObjective(item.objective);
-    setShowHistory(false);
-  };
+  setMode(item.mode);
+  setResults(item.results || null);
+  setCampaign(item.campaign || null);
+  setBrandVoice(item.brandVoice || "");
+  if (item.objective) setObjective(item.objective);
+  setText(item.preview.replace(/\.\.\.$/, ""));
+  setShowHistory(false);
+};
 
   const clearHistory = () => {
     localStorage.removeItem(HISTORY_KEY);
