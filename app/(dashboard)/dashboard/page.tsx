@@ -338,10 +338,13 @@ export default function DashboardPage() {
         )}
 
         <button
-          onClick={generate}
-          disabled={loading}
-          className="w-full py-3.5 rounded-xl bg-violet-600 hover:bg-violet-500 font-medium disabled:opacity-50 transition"
-        >
+  onClick={generate}
+  disabled={loading}
+  className="w-full py-3.5 rounded-xl bg-violet-600 hover:bg-violet-500 font-medium disabled:opacity-50 transition flex items-center justify-center gap-2"
+>
+  {loading && (
+    <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+  )}
           {loading
             ? "Generation en cours..."
             : mode === "campaign"
