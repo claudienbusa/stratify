@@ -6,10 +6,15 @@ export async function POST(req: Request) {
     const body = await req.json();
     const text = (body.text || "").trim();
     const platforms: string[] = body.platforms || ["linkedin", "twitter"];
+    const brandVoice = (body.brandVoice || "").trim();
 
     if (text.length < 50) {
       return NextResponse.json({ error: "TEXT_TOO_SHORT" }, { status: 400 });
     }
+
+    const voiceInstruction = brandVoice
+      ? `\n\nBrand Voice to strictly follow: ${brandVoice}\nAdapt tone, vocabulary, and style accordingly while keeping the core message.`
+      : "";
 
     const completion = await openai.chat.completions.create({
       model: "openai/gpt-oss-20b",
@@ -18,7 +23,7 @@ export async function POST(req: Request) {
           role: "system",
           content: `You are Stratify, an elite social media strategist and copywriter.
 
-Transform the source content into high-performing posts for the requested platforms only: ${platforms.join(", ")}.
+Transform the source content into high-performing posts for the requested platforms only: ${platforms.join(", ")}.${voiceInstruction}
 
 Rules:
 - Write in the SAME LANGUAGE as the source content
