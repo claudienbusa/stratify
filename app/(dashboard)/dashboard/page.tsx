@@ -37,7 +37,17 @@ type Day = {
   bestTime?: string;
 };
 
-function formatResult(data: unknown): string {
+function formatResult(data: unknown): { text: string; score?: number } {
+  if (typeof data === "string") return { text: data };
+  if (!data || typeof data !== "object") return { text: JSON.stringify(data, null, 2) };
+  const o = data as Record<string, unknown>;
+  const score = typeof o.score === "number" ? o.score : undefined;
+  if (typeof o.post === "string") return { text: o.post, score };
+  if (typeof o.caption === "string") return { text: o.caption, score };
+  if (typeof o.script === "string") return { text: o.script, score };
+  if (Array.isArray(o.thread)) return { text: (o.thread as string[]).join("\n\n"), score };
+  return { text: JSON.stringify(data, null, 2), score };
+}
   if (typeof data === "string") return data;
   if (!data || typeof data !== "object") return JSON.stringify(data, null, 2);
   const o = data as Record<string, unknown>;
@@ -400,11 +410,14 @@ export default function DashboardPage() {
           <div className="mt-6 space-y-4">
             <h2 className="text-lg font-semibold">Resultats</h2>
             {Object.entries(results).map(([platform, data]) => {
-              const content = formatResult(data);
+              const { text: content, score } = formatResult(data);
               return (
                 <div key={platform} className="rounded-xl border border-slate-700 bg-slate-900/80 p-5">
                   <div className="flex items-center justify-between mb-3">
-                    <span className="capitalize font-medium text-violet-300">{platform}</span>
+                    {score !== undefined && (
+  {score !== undefined && (
+  <span className="text-xs text-slate-500 ml-2">Score {score}/10</span>
+)}{platform}</span>
                     <button
                       type="button"
                       onClick={() => copy(platform, content)}
