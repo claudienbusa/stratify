@@ -284,15 +284,33 @@ export default function DashboardPage() {
         </div>
 
         <div className="mb-4">
-          <label className="text-sm text-slate-400 block mb-2">Brand Voice (optionnel)</label>
-          <input
-            type="text"
-            value={brandVoice}
-            onChange={(e) => setBrandVoice(e.target.value)}
-            placeholder="Ex: professionnel et pédagogique, direct et percutant, humour léger..."
-            className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 placeholder:text-slate-600"
-          />
-        </div>
+  <label className="text-sm text-slate-400 block mb-2">Brand Voice (optionnel)</label>
+  <input
+    type="text"
+    value={brandVoice}
+    onChange={(e) => setBrandVoice(e.target.value)}
+    placeholder="Ex: professionnel et pédagogique, direct et percutant, humour léger..."
+    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 placeholder:text-slate-600"
+  />
+  <div className="flex flex-wrap gap-2 mt-2">
+    {[
+      "Professionnel et clair",
+      "Direct et percutant",
+      "Pédagogique avec exemples",
+      "Humoristique léger",
+      "Expert technique",
+    ].map((voice) => (
+      <button
+        key={voice}
+        type="button"
+        onClick={() => setBrandVoice(voice)}
+        className="text-xs px-3 py-1.5 rounded-full border border-slate-700 hover:border-violet-500 hover:text-violet-300"
+      >
+        {voice}
+      </button>
+    ))}
+  </div>
+</div>
 
         <textarea
           className="w-full min-h-[180px] rounded-xl bg-slate-900 border border-slate-700 p-4 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 placeholder:text-slate-600"
