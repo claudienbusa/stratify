@@ -62,6 +62,7 @@ function saveHistory(items: HistoryItem[]) {
 export default function DashboardPage() {
   const [mode, setMode] = useState<"simple" | "campaign">("simple");
   const [text, setText] = useState("");
+  const [brandVoice, setBrandVoice] = useState("");
   const [selected, setSelected] = useState<string[]>(["linkedin", "twitter"]);
   const [objective, setObjective] = useState("engagement");
   const [loading, setLoading] = useState(false);
@@ -106,7 +107,7 @@ export default function DashboardPage() {
         const res = await fetch("/api/campaign", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text, objective }),
+          body: JSON.stringify({ text, objective, brandVoice }),
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Erreur");
@@ -122,7 +123,7 @@ export default function DashboardPage() {
         const res = await fetch("/api/generate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text, platforms: selected }),
+          body: JSON.stringify({ text, platforms: selected, brandVoice }),
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Erreur");
@@ -240,6 +241,19 @@ export default function DashboardPage() {
           >
             Campagne 7 jours
           </button>
+        </div>
+
+        <div className="mb-4">
+          <label className="text-sm text-slate-400 block mb-2">
+            Brand Voice (optionnel)
+          </label>
+          <input
+            type="text"
+            value={brandVoice}
+            onChange={(e) => setBrandVoice(e.target.value)}
+            placeholder="Ex: professionnel et pédagogique, direct et percutant, humour léger..."
+            className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 placeholder:text-slate-600"
+          />
         </div>
 
         <textarea
