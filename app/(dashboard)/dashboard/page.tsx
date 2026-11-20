@@ -159,7 +159,10 @@ export default function DashboardPage() {
     let content = "";
     if (results) {
       content = Object.entries(results)
-        .map(([platform, data]) => `=== ${platform.toUpperCase()} ===\n${formatResult(data)}`)
+        .map(([platform, data]) => {
+          const { text } = formatResult(data);
+          return `=== ${platform.toUpperCase()} ===\n${text}`;
+        })
         .join("\n\n");
     } else if (campaign) {
       content = `${campaign.campaignTitle || "Campagne 7 jours"}\n${campaign.strategy || ""}\n\n`;
@@ -175,14 +178,14 @@ export default function DashboardPage() {
   };
 
   const openHistoryItem = (item: HistoryItem) => {
-  setMode(item.mode);
-  setResults(item.results || null);
-  setCampaign(item.campaign || null);
-  setBrandVoice(item.brandVoice || "");
-  if (item.objective) setObjective(item.objective);
-  setText(item.preview.replace(/\.\.\.$/, ""));
-  setShowHistory(false);
-};
+    setMode(item.mode);
+    setResults(item.results || null);
+    setCampaign(item.campaign || null);
+    setBrandVoice(item.brandVoice || "");
+    if (item.objective) setObjective(item.objective);
+    setText(item.preview.replace(/\.\.\.$/, ""));
+    setShowHistory(false);
+  };
 
   const clearHistory = () => {
     localStorage.removeItem(HISTORY_KEY);
@@ -192,23 +195,23 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-slate-950 text-white">
       <header className="border-b border-slate-800">
-       <div className="max-w-3xl mx-auto px-4 h-14 flex items-center justify-between">
-  <Link href="/" className="font-bold text-violet-400">
-    Stratify
-  </Link>
-  <div className="flex items-center gap-3">
-    <span className="text-xs text-slate-500">
-      {history.length} génération{history.length > 1 ? "s" : ""}
-    </span>
-    <button
-      type="button"
-      onClick={() => setShowHistory((v) => !v)}
-      className="text-xs px-3 py-1.5 rounded-lg border border-slate-700 hover:bg-slate-900"
-    >
-      Historique
-    </button>
-  </div>
-</div>
+        <div className="max-w-3xl mx-auto px-4 h-14 flex items-center justify-between">
+          <Link href="/" className="font-bold text-violet-400">
+            Stratify
+          </Link>
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-slate-500">
+              {history.length} génération{history.length > 1 ? "s" : ""}
+            </span>
+            <button
+              type="button"
+              onClick={() => setShowHistory((v) => !v)}
+              className="text-xs px-3 py-1.5 rounded-lg border border-slate-700 hover:bg-slate-900"
+            >
+              Historique
+            </button>
+          </div>
+        </div>
       </header>
 
       <main className="max-w-3xl mx-auto px-4 py-8">
@@ -285,33 +288,33 @@ export default function DashboardPage() {
         </div>
 
         <div className="mb-4">
-  <label className="text-sm text-slate-400 block mb-2">Brand Voice (optionnel)</label>
-  <input
-    type="text"
-    value={brandVoice}
-    onChange={(e) => setBrandVoice(e.target.value)}
-    placeholder="Ex: professionnel et pédagogique, direct et percutant, humour léger..."
-    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 placeholder:text-slate-600"
-  />
-  <div className="flex flex-wrap gap-2 mt-2">
-    {[
-      "Professionnel et clair",
-      "Direct et percutant",
-      "Pédagogique avec exemples",
-      "Humoristique léger",
-      "Expert technique",
-    ].map((voice) => (
-      <button
-        key={voice}
-        type="button"
-        onClick={() => setBrandVoice(voice)}
-        className="text-xs px-3 py-1.5 rounded-full border border-slate-700 hover:border-violet-500 hover:text-violet-300"
-      >
-        {voice}
-      </button>
-    ))}
-  </div>
-</div>
+          <label className="text-sm text-slate-400 block mb-2">Brand Voice (optionnel)</label>
+          <input
+            type="text"
+            value={brandVoice}
+            onChange={(e) => setBrandVoice(e.target.value)}
+            placeholder="Ex: professionnel et pédagogique, direct et percutant, humour léger..."
+            className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 placeholder:text-slate-600"
+          />
+          <div className="flex flex-wrap gap-2 mt-2">
+            {[
+              "Professionnel et clair",
+              "Direct et percutant",
+              "Pédagogique avec exemples",
+              "Humoristique léger",
+              "Expert technique",
+            ].map((voice) => (
+              <button
+                key={voice}
+                type="button"
+                onClick={() => setBrandVoice(voice)}
+                className="text-xs px-3 py-1.5 rounded-full border border-slate-700 hover:border-violet-500 hover:text-violet-300"
+              >
+                {voice}
+              </button>
+            ))}
+          </div>
+        </div>
 
         <textarea
           className="w-full min-h-[180px] rounded-xl bg-slate-900 border border-slate-700 p-4 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 placeholder:text-slate-600"
@@ -357,13 +360,13 @@ export default function DashboardPage() {
         )}
 
         <button
-  onClick={generate}
-  disabled={loading}
-  className="w-full py-3.5 rounded-xl bg-violet-600 hover:bg-violet-500 font-medium disabled:opacity-50 transition flex items-center justify-center gap-2"
->
-  {loading && (
-    <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-  )}
+          onClick={generate}
+          disabled={loading}
+          className="w-full py-3.5 rounded-xl bg-violet-600 hover:bg-violet-500 font-medium disabled:opacity-50 transition flex items-center justify-center gap-2"
+        >
+          {loading && (
+            <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+          )}
           {loading
             ? "Generation en cours..."
             : mode === "campaign"
@@ -378,24 +381,24 @@ export default function DashboardPage() {
         )}
 
         {(results || campaign) && (
-  <div className="mt-6 flex justify-end gap-2">
-    <button
-      type="button"
-      onClick={generate}
-      disabled={loading}
-      className="text-sm px-4 py-2 rounded-lg border border-slate-600 hover:bg-slate-800 disabled:opacity-50"
-    >
-      Nouvelle version
-    </button>
-    <button
-      type="button"
-      onClick={copyAll}
-      className="text-sm px-4 py-2 rounded-lg border border-violet-600 text-violet-300 hover:bg-violet-950"
-    >
-      {copied === "all" ? "Tout copié !" : "Copier tout"}
-    </button>
-  </div>
-)}
+          <div className="mt-6 flex justify-end gap-2">
+            <button
+              type="button"
+              onClick={generate}
+              disabled={loading}
+              className="text-sm px-4 py-2 rounded-lg border border-slate-600 hover:bg-slate-800 disabled:opacity-50"
+            >
+              Nouvelle version
+            </button>
+            <button
+              type="button"
+              onClick={copyAll}
+              className="text-sm px-4 py-2 rounded-lg border border-violet-600 text-violet-300 hover:bg-violet-950"
+            >
+              {copied === "all" ? "Tout copié !" : "Copier tout"}
+            </button>
+          </div>
+        )}
 
         {results && mode === "simple" && (
           <div className="mt-6 space-y-4">
@@ -405,10 +408,12 @@ export default function DashboardPage() {
               return (
                 <div key={platform} className="rounded-xl border border-slate-700 bg-slate-900/80 p-5">
                   <div className="flex items-center justify-between mb-3">
-                    {score !== undefined && (
-  {score !== undefined && (
-  <span className="text-xs text-slate-500 ml-2">Score {score}/10</span>
-)}{platform}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="capitalize font-medium text-violet-300">{platform}</span>
+                      {score !== undefined && (
+                        <span className="text-xs text-slate-500">Score {score}/10</span>
+                      )}
+                    </div>
                     <button
                       type="button"
                       onClick={() => copy(platform, content)}
