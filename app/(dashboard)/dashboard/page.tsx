@@ -238,7 +238,12 @@ const [dark, setDark] = useState(true);
               <p className="text-sm text-slate-500">Aucune generation pour le moment.</p>
             ) : (
               <ul className="space-y-2 max-h-64 overflow-auto">
-                {history.map((item) => (
+                {history
+  .filter((item) =>
+    item.preview.toLowerCase().includes(search.toLowerCase()) ||
+    (item.brandVoice || "").toLowerCase().includes(search.toLowerCase())
+  )
+  .map((item) => (
                   <li key={item.id}>
                     <button
                       type="button"
