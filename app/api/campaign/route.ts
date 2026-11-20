@@ -6,6 +6,7 @@ export async function POST(req: Request) {
     const body = await req.json();
     const text = (body.text || "").trim();
     const objective = body.objective || "engagement";
+    const brandVoice = (body.brandVoice || "").trim();
 
     if (text.length < 50) {
       return NextResponse.json({ error: "TEXT_TOO_SHORT" }, { status: 400 });
@@ -17,6 +18,10 @@ export async function POST(req: Request) {
       conversion: "drive clicks, leads or sales",
     };
 
+    const voiceInstruction = brandVoice
+      ? `\nBrand Voice to strictly follow: ${brandVoice}`
+      : "";
+
     const completion = await openai.chat.completions.create({
       model: "openai/gpt-oss-20b",
       messages: [
@@ -24,7 +29,7 @@ export async function POST(req: Request) {
           role: "system",
           content: `You are Stratify, an expert content strategist.
 Create a 7-day social media campaign from one source content.
-Goal: ${goals[objective] || goals.engagement}
+Goal: ${goals[objective] || goals.engagement}${voiceInstruction}
 
 Respond ONLY with valid JSON:
 {
@@ -46,7 +51,8 @@ Rules:
 - Day 1 teaser, 2-3 value, 4 social proof, 5 deep dive, 6 question, 7 CTA
 - Alternate platforms: linkedin, twitter, instagram, tiktok
 - Every post must be ready to publish
-- Exactly 7 days in the array`,
+- Exactly 7 days in the array
+- Write in the SAME LANGUAGE as the source content`,
         },
         { role: "user", content: "Source content:\n\n" + text },
       ],
