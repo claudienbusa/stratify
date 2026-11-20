@@ -79,7 +79,9 @@ export default function DashboardPage() {
   const [copied, setCopied] = useState<string | null>(null);
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [showHistory, setShowHistory] = useState(false);
-const [dark, setDark] = useState(true);
+  const [dark, setDark] = useState(true);
+  const [search, setSearch] = useState("");
+
   useEffect(() => {
     setHistory(loadHistory());
   }, []);
@@ -177,6 +179,30 @@ const [dark, setDark] = useState(true);
     }
   };
 
+  const downloadTxt = () => {
+    let content = "";
+    if (results) {
+      content = Object.entries(results)
+        .map(([platform, data]) => {
+          const { text } = formatResult(data);
+          return `=== ${platform.toUpperCase()} ===\n${text}`;
+        })
+        .join("\n\n");
+    } else if (campaign) {
+      content = `${campaign.campaignTitle || "Campagne"}\n${campaign.strategy || ""}\n\n`;
+      content += (campaign.days || [])
+        .map((d) => `=== JOUR ${d.day} — ${d.theme} (${d.platform}) ===\n${d.post}`)
+        .join("\n\n");
+    }
+    const blob = new Blob([content], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "stratify-export.txt";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   const openHistoryItem = (item: HistoryItem) => {
     setMode(item.mode);
     setResults(item.results || null);
@@ -192,38 +218,44 @@ const [dark, setDark] = useState(true);
     setHistory([]);
   };
 
+  const filteredHistory = history.filter(
+    (item) =>
+      item.preview.toLowerCase().includes(search.toLowerCase()) ||
+      (item.brandVoice || "").toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <div className={`min-h-screen ${dark ? "bg-slate-950 text-white" : "bg-white text-slate-900"}`}>
-      <header className="border-b border-slate-800">
+      <header className={`border-b ${dark ? "border-slate-800" : "border-slate-200"}`}>
         <div className="max-w-3xl mx-auto px-4 h-14 flex items-center justify-between">
           <Link href="/" className="font-bold text-violet-400">
             Stratify
           </Link>
           <div className="flex items-center gap-3">
-  <span className="text-xs text-slate-500">
-    {history.length} génération{history.length > 1 ? "s" : ""}
-  </span>
-  <button
-    type="button"
-    onClick={() => setDark((d) => !d)}
-    className="text-xs px-3 py-1.5 rounded-lg border border-slate-700 hover:bg-slate-900"
-  >
-    {dark ? "Clair" : "Sombre"}
-  </button>
-  <button
-    type="button"
-    onClick={() => setShowHistory((v) => !v)}
-    className="text-xs px-3 py-1.5 rounded-lg border border-slate-700 hover:bg-slate-900"
-  >
-    Historique
-  </button>
-</div>
+            <span className="text-xs text-slate-500">
+              {history.length} génération{history.length > 1 ? "s" : ""}
+            </span>
+            <button
+              type="button"
+              onClick={() => setDark((d) => !d)}
+              className="text-xs px-3 py-1.5 rounded-lg border border-slate-700 hover:bg-slate-900"
+            >
+              {dark ? "Clair" : "Sombre"}
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowHistory((v) => !v)}
+              className="text-xs px-3 py-1.5 rounded-lg border border-slate-700 hover:bg-slate-900"
+            >
+              Historique
+            </button>
+          </div>
         </div>
       </header>
 
       <main className="max-w-3xl mx-auto px-4 py-8">
         {showHistory && (
-          <div className="mb-8 rounded-xl border border-slate-700 bg-slate-900 p-4">
+          <div className={`mb-8 rounded-xl border p-4 ${dark ? "border-slate-700 bg-slate-900" : "border-slate-200 bg-slate-50"}`}>
             <div className="flex items-center justify-between mb-3">
               <h2 className="font-semibold">Historique local</h2>
               <button
@@ -234,21 +266,23 @@ const [dark, setDark] = useState(true);
                 Tout effacer
               </button>
             </div>
-            {history.length === 0 ? (
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Rechercher..."
+              className={`w-full mb-3 rounded-lg px-3 py-1.5 text-sm border ${dark ? "bg-slate-800 border-slate-700" : "bg-white border-slate-300"}`}
+            />
+            {filteredHistory.length === 0 ? (
               <p className="text-sm text-slate-500">Aucune generation pour le moment.</p>
             ) : (
               <ul className="space-y-2 max-h-64 overflow-auto">
-                {history
-  .filter((item) =>
-    item.preview.toLowerCase().includes(search.toLowerCase()) ||
-    (item.brandVoice || "").toLowerCase().includes(search.toLowerCase())
-  )
-  .map((item) => (
+                {filteredHistory.map((item) => (
                   <li key={item.id}>
                     <button
                       type="button"
                       onClick={() => openHistoryItem(item)}
-                      className="w-full text-left rounded-lg border border-slate-800 hover:border-violet-700 px-3 py-2 text-sm"
+                      className={`w-full text-left rounded-lg border px-3 py-2 text-sm ${dark ? "border-slate-800 hover:border-violet-700" : "border-slate-200 hover:border-violet-400"}`}
                     >
                       <div className="flex justify-between gap-2 text-xs text-slate-500 mb-1">
                         <span>
@@ -257,7 +291,7 @@ const [dark, setDark] = useState(true);
                         </span>
                         <span>{item.date}</span>
                       </div>
-                      <div className="text-slate-300 truncate">{item.preview}</div>
+                      <div className="truncate">{item.preview}</div>
                       {item.brandVoice && (
                         <div className="text-xs text-violet-400 mt-1 truncate">
                           Voice: {item.brandVoice}
@@ -276,24 +310,18 @@ const [dark, setDark] = useState(true);
           1 contenu source → posts ou campagne 7 jours
         </p>
 
-        <div className="flex gap-2 mb-6 p-1 rounded-xl bg-slate-900 border border-slate-800 w-fit">
+        <div className={`flex gap-2 mb-6 p-1 rounded-xl border w-fit ${dark ? "bg-slate-900 border-slate-800" : "bg-slate-100 border-slate-200"}`}>
           <button
             type="button"
             onClick={() => setMode("simple")}
-            className={
-              "px-4 py-2 rounded-lg text-sm font-medium transition " +
-              (mode === "simple" ? "bg-violet-600 text-white" : "text-slate-400 hover:text-white")
-            }
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${mode === "simple" ? "bg-violet-600 text-white" : "text-slate-400 hover:text-white"}`}
           >
             Mode Simple
           </button>
           <button
             type="button"
             onClick={() => setMode("campaign")}
-            className={
-              "px-4 py-2 rounded-lg text-sm font-medium transition " +
-              (mode === "campaign" ? "bg-violet-600 text-white" : "text-slate-400 hover:text-white")
-            }
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${mode === "campaign" ? "bg-violet-600 text-white" : "text-slate-400 hover:text-white"}`}
           >
             Campagne 7 jours
           </button>
@@ -305,17 +333,11 @@ const [dark, setDark] = useState(true);
             type="text"
             value={brandVoice}
             onChange={(e) => setBrandVoice(e.target.value)}
-            placeholder="Ex: professionnel et pédagogique, direct et percutant, humour léger..."
-            className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 placeholder:text-slate-600"
+            placeholder="Ex: professionnel et pédagogique..."
+            className={`w-full rounded-xl px-4 py-2.5 text-sm border focus:outline-none focus:ring-2 focus:ring-violet-500 ${dark ? "bg-slate-900 border-slate-700" : "bg-white border-slate-300"}`}
           />
           <div className="flex flex-wrap gap-2 mt-2">
-            {[
-              "Professionnel et clair",
-              "Direct et percutant",
-              "Pédagogique avec exemples",
-              "Humoristique léger",
-              "Expert technique",
-            ].map((voice) => (
+            {["Professionnel et clair", "Direct et percutant", "Pédagogique avec exemples", "Humoristique léger", "Expert technique"].map((voice) => (
               <button
                 key={voice}
                 type="button"
@@ -329,7 +351,7 @@ const [dark, setDark] = useState(true);
         </div>
 
         <textarea
-          className="w-full min-h-[180px] rounded-xl bg-slate-900 border border-slate-700 p-4 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 placeholder:text-slate-600"
+          className={`w-full min-h-[180px] rounded-xl p-4 text-sm border focus:outline-none focus:ring-2 focus:ring-violet-500 ${dark ? "bg-slate-900 border-slate-700" : "bg-white border-slate-300"}`}
           placeholder="Colle ton script, article ou idee (min. 50 caracteres)..."
           value={text}
           onChange={(e) => setText(e.target.value)}
@@ -343,12 +365,7 @@ const [dark, setDark] = useState(true);
                 key={p.id}
                 type="button"
                 onClick={() => toggle(p.id)}
-                className={
-                  "px-3 py-1.5 rounded-full text-sm border transition " +
-                  (selected.includes(p.id)
-                    ? "bg-violet-600 border-violet-500 text-white"
-                    : "border-slate-600 text-slate-400 hover:border-slate-400")
-                }
+                className={`px-3 py-1.5 rounded-full text-sm border transition ${selected.includes(p.id) ? "bg-violet-600 border-violet-500 text-white" : "border-slate-600 text-slate-400"}`}
               >
                 {p.label}
               </button>
@@ -362,7 +379,7 @@ const [dark, setDark] = useState(true);
             <select
               value={objective}
               onChange={(e) => setObjective(e.target.value)}
-              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+              className={`w-full rounded-xl px-3 py-2.5 text-sm border ${dark ? "bg-slate-900 border-slate-700" : "bg-white border-slate-300"}`}
             >
               <option value="engagement">Engagement — likes, commentaires, partages</option>
               <option value="authority">Autorite — expertise et credibilite</option>
@@ -379,11 +396,7 @@ const [dark, setDark] = useState(true);
           {loading && (
             <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
           )}
-          {loading
-            ? "Generation en cours..."
-            : mode === "campaign"
-              ? "Generer la campagne 7 jours"
-              : "Generer les posts"}
+          {loading ? "Generation en cours..." : mode === "campaign" ? "Generer la campagne 7 jours" : "Generer les posts"}
         </button>
 
         {error && (
@@ -393,78 +406,36 @@ const [dark, setDark] = useState(true);
         )}
 
         {(results || campaign) && (
-  <div className="mt-6 flex justify-end gap-2 flex-wrap">
-    <button
-      type="button"
-      onClick={generate}
-      disabled={loading}
-      className="text-sm px-4 py-2 rounded-lg border border-slate-600 hover:bg-slate-800 disabled:opacity-50"
-    >
-      Nouvelle version
-    </button>
-    <button
-      type="button"
-      onClick={copyAll}
-      className="text-sm px-4 py-2 rounded-lg border border-violet-600 text-violet-300 hover:bg-violet-950"
-    >
-      {copied === "all" ? "Tout copié !" : "Copier tout"}
-    </button>
-    <button
-      type="button"
-      onClick={() => {
-        let content = "";
-        if (results) {
-          content = Object.entries(results)
-            .map(([platform, data]) => {
-              const { text } = formatResult(data);
-              return `=== ${platform.toUpperCase()} ===\n${text}`;
-            })
-            .join("\n\n");
-        } else if (campaign) {
-          content = `${campaign.campaignTitle || "Campagne"}\n${campaign.strategy || ""}\n\n`;
-          content += (campaign.days || [])
-            .map((d) => `=== JOUR ${d.day} — ${d.theme} (${d.platform}) ===\n${d.post}`)
-            .join("\n\n");
-        }
-        const blob = new Blob([content], { type: "text/plain" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "stratify-export.txt";
-        a.click();
-        URL.revokeObjectURL(url);
-      }}
-      className="text-sm px-4 py-2 rounded-lg border border-slate-600 hover:bg-slate-800"
-    >
-      Télécharger .txt
-    </button>
-  </div>
-)}
+          <div className="mt-6 flex justify-end gap-2 flex-wrap">
+            <button type="button" onClick={generate} disabled={loading} className="text-sm px-4 py-2 rounded-lg border border-slate-600 hover:bg-slate-800 disabled:opacity-50">
+              Nouvelle version
+            </button>
+            <button type="button" onClick={copyAll} className="text-sm px-4 py-2 rounded-lg border border-violet-600 text-violet-300 hover:bg-violet-950">
+              {copied === "all" ? "Tout copié !" : "Copier tout"}
+            </button>
+            <button type="button" onClick={downloadTxt} className="text-sm px-4 py-2 rounded-lg border border-slate-600 hover:bg-slate-800">
+              Télécharger .txt
+            </button>
+          </div>
+        )}
+
         {results && mode === "simple" && (
           <div className="mt-6 space-y-4">
             <h2 className="text-lg font-semibold">Resultats</h2>
             {Object.entries(results).map(([platform, data]) => {
               const { text: content, score } = formatResult(data);
               return (
-                <div key={platform} className="rounded-xl border border-slate-700 bg-slate-900/80 p-5">
+                <div key={platform} className={`rounded-xl border p-5 ${dark ? "border-slate-700 bg-slate-900/80" : "border-slate-200 bg-slate-50"}`}>
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
                       <span className="capitalize font-medium text-violet-300">{platform}</span>
-                      {score !== undefined && (
-                        <span className="text-xs text-slate-500">Score {score}/10</span>
-                      )}
+                      {score !== undefined && <span className="text-xs text-slate-500">Score {score}/10</span>}
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => copy(platform, content)}
-                      className="text-xs px-3 py-1.5 rounded-lg border border-slate-600 hover:bg-slate-800"
-                    >
+                    <button type="button" onClick={() => copy(platform, content)} className="text-xs px-3 py-1.5 rounded-lg border border-slate-600 hover:bg-slate-800">
                       {copied === platform ? "Copie !" : "Copier"}
                     </button>
                   </div>
-                  <pre className="text-sm text-slate-200 whitespace-pre-wrap font-sans leading-relaxed">
-                    {content}
-                  </pre>
+                  <pre className="text-sm whitespace-pre-wrap font-sans leading-relaxed">{content}</pre>
                 </div>
               );
             })}
@@ -473,37 +444,24 @@ const [dark, setDark] = useState(true);
 
         {campaign && mode === "campaign" && (
           <div className="mt-6 space-y-4">
-            <div className="rounded-xl border border-violet-900/50 bg-violet-950/30 p-5">
+            <div className={`rounded-xl border p-5 ${dark ? "border-violet-900/50 bg-violet-950/30" : "border-violet-200 bg-violet-50"}`}>
               <h2 className="text-xl font-bold">{campaign.campaignTitle || "Campagne 7 jours"}</h2>
-              {campaign.strategy && (
-                <p className="text-slate-400 text-sm mt-2">{campaign.strategy}</p>
-              )}
+              {campaign.strategy && <p className="text-slate-400 text-sm mt-2">{campaign.strategy}</p>}
             </div>
             {(campaign.days || []).map((day) => (
-              <div key={day.day} className="rounded-xl border border-slate-700 bg-slate-900/80 p-5">
+              <div key={day.day} className={`rounded-xl border p-5 ${dark ? "border-slate-700 bg-slate-900/80" : "border-slate-200 bg-slate-50"}`}>
                 <div className="flex justify-between items-start gap-3 mb-3">
                   <div>
-                    <div className="font-medium">
-                      Jour {day.day}
-                      {day.theme ? ` — ${day.theme}` : ""}
-                    </div>
+                    <div className="font-medium">Jour {day.day}{day.theme ? ` — ${day.theme}` : ""}</div>
                     <div className="text-xs text-slate-500 mt-1">
-                      {day.platform}
-                      {day.bestTime ? ` · ${day.bestTime}` : ""}
-                      {day.goal ? ` · ${day.goal}` : ""}
+                      {day.platform}{day.bestTime ? ` · ${day.bestTime}` : ""}{day.goal ? ` · ${day.goal}` : ""}
                     </div>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => copy("day-" + day.day, day.post)}
-                    className="text-xs px-3 py-1.5 rounded-lg border border-slate-600 hover:bg-slate-800 shrink-0"
-                  >
+                  <button type="button" onClick={() => copy("day-" + day.day, day.post)} className="text-xs px-3 py-1.5 rounded-lg border border-slate-600 hover:bg-slate-800 shrink-0">
                     {copied === "day-" + day.day ? "Copie !" : "Copier"}
                   </button>
                 </div>
-                <pre className="text-sm text-slate-200 whitespace-pre-wrap font-sans leading-relaxed">
-                  {day.post}
-                </pre>
+                <pre className="text-sm whitespace-pre-wrap font-sans leading-relaxed">{day.post}</pre>
               </div>
             ))}
           </div>
