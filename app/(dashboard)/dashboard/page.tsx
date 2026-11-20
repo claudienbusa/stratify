@@ -359,16 +359,24 @@ export default function DashboardPage() {
         )}
 
         {(results || campaign) && (
-          <div className="mt-6 flex justify-end">
-            <button
-              type="button"
-              onClick={copyAll}
-              className="text-sm px-4 py-2 rounded-lg border border-violet-600 text-violet-300 hover:bg-violet-950"
-            >
-              {copied === "all" ? "Tout copié !" : "Copier tout"}
-            </button>
-          </div>
-        )}
+  <div className="mt-6 flex justify-end gap-2">
+    <button
+      type="button"
+      onClick={generate}
+      disabled={loading}
+      className="text-sm px-4 py-2 rounded-lg border border-slate-600 hover:bg-slate-800 disabled:opacity-50"
+    >
+      Nouvelle version
+    </button>
+    <button
+      type="button"
+      onClick={copyAll}
+      className="text-sm px-4 py-2 rounded-lg border border-violet-600 text-violet-300 hover:bg-violet-950"
+    >
+      {copied === "all" ? "Tout copié !" : "Copier tout"}
+    </button>
+  </div>
+)}
 
         {results && mode === "simple" && (
           <div className="mt-6 space-y-4">
