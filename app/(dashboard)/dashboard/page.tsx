@@ -149,6 +149,28 @@ export default function DashboardPage() {
     setTimeout(() => setCopied(null), 2000);
   };
 
+  const copyAll = async () => {
+    let content = "";
+    if (results) {
+      content = Object.entries(results)
+        .map(([platform, data]) => `=== ${platform.toUpperCase()} ===\n${formatResult(data)}`)
+        .join("\n\n");
+    } else if (campaign) {
+      content = `${campaign.campaignTitle || "Campagne 7 jours"}\n${campaign.strategy || ""}\n\n`;
+      content += (campaign.days || [])
+        .map(
+          (d) =>
+            `=== JOUR ${d.day} — ${d.theme} (${d.platform}) ===\n${d.post}`
+        )
+        .join("\n\n");
+    }
+    if (content) {
+      await navigator.clipboard.writeText(content);
+      setCopied("all");
+      setTimeout(() => setCopied(null), 2000);
+    }
+  };
+
   const openHistoryItem = (item: HistoryItem) => {
     setMode(item.mode);
     setResults(item.results || null);
@@ -244,9 +266,7 @@ export default function DashboardPage() {
         </div>
 
         <div className="mb-4">
-          <label className="text-sm text-slate-400 block mb-2">
-            Brand Voice (optionnel)
-          </label>
+          <label className="text-sm text-slate-400 block mb-2">Brand Voice (optionnel)</label>
           <input
             type="text"
             value={brandVoice}
@@ -317,8 +337,20 @@ export default function DashboardPage() {
           </p>
         )}
 
+        {(results || campaign) && (
+          <div className="mt-6 flex justify-end">
+            <button
+              type="button"
+              onClick={copyAll}
+              className="text-sm px-4 py-2 rounded-lg border border-violet-600 text-violet-300 hover:bg-violet-950"
+            >
+              {copied === "all" ? "Tout copié !" : "Copier tout"}
+            </button>
+          </div>
+        )}
+
         {results && mode === "simple" && (
-          <div className="mt-10 space-y-4">
+          <div className="mt-6 space-y-4">
             <h2 className="text-lg font-semibold">Resultats</h2>
             {Object.entries(results).map(([platform, data]) => {
               const content = formatResult(data);
@@ -344,7 +376,7 @@ export default function DashboardPage() {
         )}
 
         {campaign && mode === "campaign" && (
-          <div className="mt-10 space-y-4">
+          <div className="mt-6 space-y-4">
             <div className="rounded-xl border border-violet-900/50 bg-violet-950/30 p-5">
               <h2 className="text-xl font-bold">{campaign.campaignTitle || "Campagne 7 jours"}</h2>
               {campaign.strategy && (
