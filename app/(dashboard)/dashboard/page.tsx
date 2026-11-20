@@ -48,15 +48,6 @@ function formatResult(data: unknown): { text: string; score?: number } {
   if (Array.isArray(o.thread)) return { text: (o.thread as string[]).join("\n\n"), score };
   return { text: JSON.stringify(data, null, 2), score };
 }
-  if (typeof data === "string") return data;
-  if (!data || typeof data !== "object") return JSON.stringify(data, null, 2);
-  const o = data as Record<string, unknown>;
-  if (typeof o.post === "string") return o.post;
-  if (typeof o.caption === "string") return o.caption;
-  if (typeof o.script === "string") return o.script;
-  if (Array.isArray(o.thread)) return (o.thread as string[]).join("\n\n");
-  return JSON.stringify(data, null, 2);
-}
 
 function loadHistory(): HistoryItem[] {
   try {
