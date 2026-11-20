@@ -291,7 +291,34 @@ export default function DashboardPage() {
                         </span>
                         <span>{item.date}</span>
                       </div>
-                      <div className="truncate">{item.preview}</div>
+                      <div className="truncate">{item.preview}</div><div className="truncate">{item.preview}</div><button
+  type="button"
+  onClick={(e) => {
+    e.stopPropagation();
+    const updated = history.map((h) =>
+      h.id === item.id ? { ...h, favorite: !h.favorite } : h
+    );
+    saveHistory(updated);
+    setHistory(updated);
+  }}
+  className="text-xs ml-2"
+>
+  {item.favorite ? "★" : "☆"}
+</button>
+<button
+  type="button"
+  onClick={(e) => {
+    e.stopPropagation();
+    const updated = history.map((h) =>
+      h.id === item.id ? { ...h, favorite: !h.favorite } : h
+    );
+    saveHistory(updated);
+    setHistory(updated);
+  }}
+  className="text-xs ml-2"
+>
+  {item.favorite ? "★" : "☆"}
+</button>
                       {item.brandVoice && (
                         <div className="text-xs text-violet-400 mt-1 truncate">
                           Voice: {item.brandVoice}
