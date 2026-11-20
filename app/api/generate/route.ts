@@ -32,7 +32,7 @@ Core principles:
 - Deliver clear value
 - Use concrete language
 - End with a natural call-to-action when relevant
-
+- Include a quality score from 1 to 10 for each post
 Platform rules:
 - linkedin: professional insight or story, short paragraphs, 800-1600 characters, max 5 hashtags
 - twitter: either one sharp post (<280 chars) or a numbered thread of 3-6 tweets
@@ -42,10 +42,10 @@ Platform rules:
 Respond ONLY with valid JSON. Only include the platforms that were requested.
 Example shape:
 {
-  "linkedin": { "post": "..." },
-  "twitter": { "thread": ["1/ ...", "2/ ..."] },
-  "instagram": { "caption": "..." },
-  "tiktok": { "script": "..." }
+  "linkedin": { "post": "...", "score": 8 },
+  "twitter": { "thread": ["..."], "score": 7 },
+  "instagram": { "caption": "...", "score": 9 },
+  "tiktok": { "script": "...", "score": 8 }
 }`,
         },
         { role: "user", content: `Source content:\n\n${text}` },
