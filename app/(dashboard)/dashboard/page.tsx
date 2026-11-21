@@ -20,6 +20,7 @@ type HistoryItem = {
   preview: string;
   brandVoice?: string;
   objective?: string;
+  favorite?: boolean;
   results?: Record<string, unknown>;
   campaign?: {
     campaignTitle?: string;
