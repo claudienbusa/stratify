@@ -82,6 +82,7 @@ export default function DashboardPage() {
   const [showHistory, setShowHistory] = useState(false);
   const [dark, setDark] = useState(true);
   const [search, setSearch] = useState("");
+  const [rewriting, setRewriting] = useState<string | null>(null);
 
   useEffect(() => {
     setHistory(loadHistory());
@@ -152,6 +153,28 @@ export default function DashboardPage() {
     }
   };
 
+  const rewrite = async (platform: string, content: string) => {
+    setRewriting(platform);
+    try {
+      const res = await fetch("/api/rewrite", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: content, tone: "plus percutant et engageant" }),
+      });
+      const data = await res.json();
+      if (data.rewritten && results) {
+        setResults({
+          ...results,
+          [platform]: { ...(results[platform] as object), post: data.rewritten, caption: data.rewritten, script: data.rewritten },
+        });
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setRewriting(null);
+    }
+  };
+
   const copy = async (key: string, content: string) => {
     await navigator.clipboard.writeText(content);
     setCopied(key);
@@ -219,6 +242,14 @@ export default function DashboardPage() {
     setHistory([]);
   };
 
+  const toggleFavorite = (id: string) => {
+    const updated = history.map((h) =>
+      h.id === id ? { ...h, favorite: !h.favorite } : h
+    );
+    saveHistory(updated);
+    setHistory(updated);
+  };
+
   const filteredHistory = history.filter(
     (item) =>
       item.preview.toLowerCase().includes(search.toLowerCase()) ||
@@ -234,8 +265,9 @@ export default function DashboardPage() {
           </Link>
           <div className="flex items-center gap-3">
             <span className="text-xs text-slate-500">
-  {history.length} gen. · {history.filter(h => h.mode === "simple").length} simple · {history.filter(h => h.mode === "campaign").length} camp.
-</span>
+              {history.length} gen. · {history.filter((h) => h.mode === "simple").length} simple ·{" "}
+              {history.filter((h) => h.mode === "campaign").length} camp.
+            </span>
             <button
               type="button"
               onClick={() => setDark((d) => !d)}
@@ -259,11 +291,7 @@ export default function DashboardPage() {
           <div className={`mb-8 rounded-xl border p-4 ${dark ? "border-slate-700 bg-slate-900" : "border-slate-200 bg-slate-50"}`}>
             <div className="flex items-center justify-between mb-3">
               <h2 className="font-semibold">Historique local</h2>
-              <button
-                type="button"
-                onClick={clearHistory}
-                className="text-xs text-slate-500 hover:text-red-400"
-              >
+              <button type="button" onClick={clearHistory} className="text-xs text-slate-500 hover:text-red-400">
                 Tout effacer
               </button>
             </div>
@@ -280,52 +308,32 @@ export default function DashboardPage() {
               <ul className="space-y-2 max-h-64 overflow-auto">
                 {filteredHistory.map((item) => (
                   <li key={item.id}>
-                    <button
-                      type="button"
-                      onClick={() => openHistoryItem(item)}
-                      className={`w-full text-left rounded-lg border px-3 py-2 text-sm ${dark ? "border-slate-800 hover:border-violet-700" : "border-slate-200 hover:border-violet-400"}`}
-                    >
-                      <div className="flex justify-between gap-2 text-xs text-slate-500 mb-1">
-                        <span>
-                          {item.mode === "campaign" ? "Campagne" : "Simple"}
-                          {item.objective ? ` · ${item.objective}` : ""}
-                        </span>
-                        <span>{item.date}</span>
-                      </div>
-                      <div className="truncate">{item.preview}</div><div className="truncate">{item.preview}</div><button
-  type="button"
-  onClick={(e) => {
-    e.stopPropagation();
-    const updated = history.map((h) =>
-      h.id === item.id ? { ...h, favorite: !h.favorite } : h
-    );
-    saveHistory(updated);
-    setHistory(updated);
-  }}
-  className="text-xs ml-2"
->
-  {item.favorite ? "★" : "☆"}
-</button>
-<button
-  type="button"
-  onClick={(e) => {
-    e.stopPropagation();
-    const updated = history.map((h) =>
-      h.id === item.id ? { ...h, favorite: !h.favorite } : h
-    );
-    saveHistory(updated);
-    setHistory(updated);
-  }}
-  className="text-xs ml-2"
->
-  {item.favorite ? "★" : "☆"}
-</button>
-                      {item.brandVoice && (
-                        <div className="text-xs text-violet-400 mt-1 truncate">
-                          Voice: {item.brandVoice}
+                    <div className={`flex items-start gap-2 rounded-lg border px-3 py-2 text-sm ${dark ? "border-slate-800" : "border-slate-200"}`}>
+                      <button
+                        type="button"
+                        onClick={() => openHistoryItem(item)}
+                        className="flex-1 text-left"
+                      >
+                        <div className="flex justify-between gap-2 text-xs text-slate-500 mb-1">
+                          <span>
+                            {item.mode === "campaign" ? "Campagne" : "Simple"}
+                            {item.objective ? ` · ${item.objective}` : ""}
+                          </span>
+                          <span>{item.date}</span>
                         </div>
-                      )}
-                    </button>
+                        <div className="truncate">{item.preview}</div>
+                        {item.brandVoice && (
+                          <div className="text-xs text-violet-400 mt-1 truncate">Voice: {item.brandVoice}</div>
+                        )}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => toggleFavorite(item.id)}
+                        className="text-lg shrink-0"
+                      >
+                        {item.favorite ? "★" : "☆"}
+                      </button>
+                    </div>
                   </li>
                 ))}
               </ul>
@@ -334,22 +342,20 @@ export default function DashboardPage() {
         )}
 
         <h1 className="text-2xl font-bold mb-1">Studio</h1>
-        <p className="text-slate-400 text-sm mb-6">
-          1 contenu source → posts ou campagne 7 jours
-        </p>
+        <p className="text-slate-400 text-sm mb-6">1 contenu source → posts ou campagne 7 jours</p>
 
         <div className={`flex gap-2 mb-6 p-1 rounded-xl border w-fit ${dark ? "bg-slate-900 border-slate-800" : "bg-slate-100 border-slate-200"}`}>
           <button
             type="button"
             onClick={() => setMode("simple")}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${mode === "simple" ? "bg-violet-600 text-white" : "text-slate-400 hover:text-white"}`}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${mode === "simple" ? "bg-violet-600 text-white" : "text-slate-400"}`}
           >
             Mode Simple
           </button>
           <button
             type="button"
             onClick={() => setMode("campaign")}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${mode === "campaign" ? "bg-violet-600 text-white" : "text-slate-400 hover:text-white"}`}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${mode === "campaign" ? "bg-violet-600 text-white" : "text-slate-400"}`}
           >
             Campagne 7 jours
           </button>
@@ -421,16 +427,12 @@ export default function DashboardPage() {
           disabled={loading}
           className="w-full py-3.5 rounded-xl bg-violet-600 hover:bg-violet-500 font-medium disabled:opacity-50 transition flex items-center justify-center gap-2"
         >
-          {loading && (
-            <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-          )}
+          {loading && <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />}
           {loading ? "Generation en cours..." : mode === "campaign" ? "Generer la campagne 7 jours" : "Generer les posts"}
         </button>
 
         {error && (
-          <p className="text-red-400 mt-4 text-sm bg-red-950/40 border border-red-900 rounded-lg px-3 py-2">
-            {error}
-          </p>
+          <p className="text-red-400 mt-4 text-sm bg-red-950/40 border border-red-900 rounded-lg px-3 py-2">{error}</p>
         )}
 
         {(results || campaign) && (
@@ -452,28 +454,36 @@ export default function DashboardPage() {
             <h2 className="text-lg font-semibold">Resultats</h2>
             {Object.entries(results).map(([platform, data]) => {
               const { text: content, score } = formatResult(data);
-            <div className="text-xs text-slate-500 mt-1">
-  {platform === "linkedin" && "Meilleur moment : Mardi 9h"}
-  {platform === "twitter" && "Meilleur moment : Mercredi 12h"}
-  {platform === "instagram" && "Meilleur moment : Vendredi 18h"}
-  {platform === "tiktok" && "Meilleur moment : Samedi 19h"}
-</div>
               return (
                 <div key={platform} className={`rounded-xl border p-5 ${dark ? "border-slate-700 bg-slate-900/80" : "border-slate-200 bg-slate-50"}`}>
-                  <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center justify-between mb-1">
                     <div className="flex items-center gap-2">
                       <span className="capitalize font-medium text-violet-300">{platform}</span>
                       {score !== undefined && <span className="text-xs text-slate-500">Score {score}/10</span>}
-                      <div className="text-xs text-slate-500 mt-1">
-  {platform === "linkedin" && "Meilleur moment : Mardi 9h"}
-  {platform === "twitter" && "Meilleur moment : Mercredi 12h"}
-  {platform === "instagram" && "Meilleur moment : Vendredi 18h"}
-  {platform === "tiktok" && "Meilleur moment : Samedi 19h"}
-</div>
                     </div>
-                    <button type="button" onClick={() => copy(platform, content)} className="text-xs px-3 py-1.5 rounded-lg border border-slate-600 hover:bg-slate-800">
-                      {copied === platform ? "Copie !" : "Copier"}
-                    </button>
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => rewrite(platform, content)}
+                        disabled={rewriting === platform}
+                        className="text-xs px-3 py-1.5 rounded-lg border border-slate-600 hover:bg-slate-800 disabled:opacity-50"
+                      >
+                        {rewriting === platform ? "..." : "Réécrire"}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => copy(platform, content)}
+                        className="text-xs px-3 py-1.5 rounded-lg border border-slate-600 hover:bg-slate-800"
+                      >
+                        {copied === platform ? "Copie !" : "Copier"}
+                      </button>
+                    </div>
+                  </div>
+                  <div className="text-xs text-slate-500 mb-3">
+                    {platform === "linkedin" && "Meilleur moment : Mardi 9h"}
+                    {platform === "twitter" && "Meilleur moment : Mercredi 12h"}
+                    {platform === "instagram" && "Meilleur moment : Vendredi 18h"}
+                    {platform === "tiktok" && "Meilleur moment : Samedi 19h"}
                   </div>
                   <pre className="text-sm whitespace-pre-wrap font-sans leading-relaxed">{content}</pre>
                 </div>
@@ -492,12 +502,21 @@ export default function DashboardPage() {
               <div key={day.day} className={`rounded-xl border p-5 ${dark ? "border-slate-700 bg-slate-900/80" : "border-slate-200 bg-slate-50"}`}>
                 <div className="flex justify-between items-start gap-3 mb-3">
                   <div>
-                    <div className="font-medium">Jour {day.day}{day.theme ? ` — ${day.theme}` : ""}</div>
+                    <div className="font-medium">
+                      Jour {day.day}
+                      {day.theme ? ` — ${day.theme}` : ""}
+                    </div>
                     <div className="text-xs text-slate-500 mt-1">
-                      {day.platform}{day.bestTime ? ` · ${day.bestTime}` : ""}{day.goal ? ` · ${day.goal}` : ""}
+                      {day.platform}
+                      {day.bestTime ? ` · ${day.bestTime}` : ""}
+                      {day.goal ? ` · ${day.goal}` : ""}
                     </div>
                   </div>
-                  <button type="button" onClick={() => copy("day-" + day.day, day.post)} className="text-xs px-3 py-1.5 rounded-lg border border-slate-600 hover:bg-slate-800 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => copy("day-" + day.day, day.post)}
+                    className="text-xs px-3 py-1.5 rounded-lg border border-slate-600 hover:bg-slate-800 shrink-0"
+                  >
                     {copied === "day-" + day.day ? "Copie !" : "Copier"}
                   </button>
                 </div>
