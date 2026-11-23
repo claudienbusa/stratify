@@ -1,317 +1,424 @@
-"use client";
+export type Lang = "fr" | "en" | "es" | "pt" | "zh" | "hi" | "ar" | "de" | "ja" | "id";
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import { translations, Lang } from "@/lib/translations";
-
-const PLATFORMS = [
-  { id: "linkedin", label: "LinkedIn" },
-  { id: "twitter", label: "Twitter / X" },
-  { id: "instagram", label: "Instagram" },
-  { id: "tiktok", label: "TikTok" },
-];
-
-const HISTORY_KEY = "stratify_history";
-const MAX_HISTORY = 20;
-const LANG_KEY = "stratify_lang";
-
-type HistoryItem = {
-  id: string;
-  date: string;
-  mode: "simple" | "campaign";
-  preview: string;
-  brandVoice?: string;
-  objective?: string;
-  favorite?: boolean;
-  results?: Record<string, unknown>;
-  campaign?: {
-    campaignTitle?: string;
-    strategy?: string;
-    days?: Day[];
-  };
+export const translations: Record<Lang, { [key: string]: string | string[] }> = {
+  fr: {
+    studio: "Studio",
+    subtitle: "1 contenu → posts multi-plateformes",
+    simple: "Simple",
+    campaign: "Campagne 7 jours",
+    brandVoice: "Voix de marque",
+    voicePlaceholder: "Ex: professionnel, humoristique, inspirant...",
+    voices: ["Professionnel", "Humoristique", "Inspirant", "Éducatif", "Direct"],
+    placeholder: "Colle ton contenu ici (article, notes, transcript...)",
+    charactersLabel: "caractères",
+    minChars: "Minimum 50 caractères",
+    campaignGoal: "Objectif de la campagne",
+    engagement: "Engagement",
+    authority: "Autorité",
+    conversion: "Conversion",
+    generate: "Générer les posts",
+    generateCampaign: "Générer la campagne",
+    generating: "Génération...",
+    error: "Une erreur est survenue",
+    results: "Résultats",
+    history: "Historique",
+    clearAll: "Tout effacer",
+    search: "Rechercher...",
+    noHistory: "Aucun historique",
+    voice: "Voix",
+    copy: "Copier",
+    copied: "Copié !",
+    copyAll: "Tout copier",
+    allCopied: "Tout copié !",
+    download: "Télécharger",
+    newVersion: "Nouvelle version",
+    hook: "Accroche",
+    rewrite: "Réécrire",
+    hashtags: "Hashtags",
+    copyHashtags: "Copier hashtags",
+    bestTime: "Meilleur moment",
+    characters: "caractères",
+    tooLong: "Trop long",
+    day: "Jour",
+    light: "Clair",
+    dark: "Sombre",
+  },
+  en: {
+    studio: "Studio",
+    subtitle: "1 content → multi-platform posts",
+    simple: "Simple",
+    campaign: "7-day Campaign",
+    brandVoice: "Brand Voice",
+    voicePlaceholder: "Ex: professional, humorous, inspiring...",
+    voices: ["Professional", "Humorous", "Inspiring", "Educational", "Direct"],
+    placeholder: "Paste your content here (article, notes, transcript...)",
+    charactersLabel: "characters",
+    minChars: "Minimum 50 characters",
+    campaignGoal: "Campaign goal",
+    engagement: "Engagement",
+    authority: "Authority",
+    conversion: "Conversion",
+    generate: "Generate posts",
+    generateCampaign: "Generate campaign",
+    generating: "Generating...",
+    error: "An error occurred",
+    results: "Results",
+    history: "History",
+    clearAll: "Clear all",
+    search: "Search...",
+    noHistory: "No history",
+    voice: "Voice",
+    copy: "Copy",
+    copied: "Copied!",
+    copyAll: "Copy all",
+    allCopied: "All copied!",
+    download: "Download",
+    newVersion: "New version",
+    hook: "Hook",
+    rewrite: "Rewrite",
+    hashtags: "Hashtags",
+    copyHashtags: "Copy hashtags",
+    bestTime: "Best time",
+    characters: "characters",
+    tooLong: "Too long",
+    day: "Day",
+    light: "Light",
+    dark: "Dark",
+  },
+  es: {
+    studio: "Estudio",
+    subtitle: "1 contenido → posts multiplataforma",
+    simple: "Simple",
+    campaign: "Campaña 7 días",
+    brandVoice: "Voz de marca",
+    voicePlaceholder: "Ej: profesional, humorístico, inspirador...",
+    voices: ["Profesional", "Humorístico", "Inspirador", "Educativo", "Directo"],
+    placeholder: "Pega tu contenido aquí",
+    charactersLabel: "caracteres",
+    minChars: "Mínimo 50 caracteres",
+    campaignGoal: "Objetivo de la campaña",
+    engagement: "Engagement",
+    authority: "Autoridad",
+    conversion: "Conversión",
+    generate: "Generar posts",
+    generateCampaign: "Generar campaña",
+    generating: "Generando...",
+    error: "Ocurrió un error",
+    results: "Resultados",
+    history: "Historial",
+    clearAll: "Borrar todo",
+    search: "Buscar...",
+    noHistory: "Sin historial",
+    voice: "Voz",
+    copy: "Copiar",
+    copied: "¡Copiado!",
+    copyAll: "Copiar todo",
+    allCopied: "¡Todo copiado!",
+    download: "Descargar",
+    newVersion: "Nueva versión",
+    hook: "Gancho",
+    rewrite: "Reescribir",
+    hashtags: "Hashtags",
+    copyHashtags: "Copiar hashtags",
+    bestTime: "Mejor momento",
+    characters: "caracteres",
+    tooLong: "Muy largo",
+    day: "Día",
+    light: "Claro",
+    dark: "Oscuro",
+  },
+  pt: {
+    studio: "Estúdio",
+    subtitle: "1 conteúdo → posts multiplataforma",
+    simple: "Simples",
+    campaign: "Campanha 7 dias",
+    brandVoice: "Voz da marca",
+    voicePlaceholder: "Ex: profissional, humorístico, inspirador...",
+    voices: ["Profissional", "Humorístico", "Inspirador", "Educativo", "Direto"],
+    placeholder: "Cole seu conteúdo aqui",
+    charactersLabel: "caracteres",
+    minChars: "Mínimo 50 caracteres",
+    campaignGoal: "Objetivo da campanha",
+    engagement: "Engajamento",
+    authority: "Autoridade",
+    conversion: "Conversão",
+    generate: "Gerar posts",
+    generateCampaign: "Gerar campanha",
+    generating: "Gerando...",
+    error: "Ocorreu um erro",
+    results: "Resultados",
+    history: "Histórico",
+    clearAll: "Limpar tudo",
+    search: "Pesquisar...",
+    noHistory: "Sem histórico",
+    voice: "Voz",
+    copy: "Copiar",
+    copied: "Copiado!",
+    copyAll: "Copiar tudo",
+    allCopied: "Tudo copiado!",
+    download: "Baixar",
+    newVersion: "Nova versão",
+    hook: "Gancho",
+    rewrite: "Reescrever",
+    hashtags: "Hashtags",
+    copyHashtags: "Copiar hashtags",
+    bestTime: "Melhor momento",
+    characters: "caracteres",
+    tooLong: "Muito longo",
+    day: "Dia",
+    light: "Claro",
+    dark: "Escuro",
+  },
+  zh: {
+    studio: "工作室",
+    subtitle: "1个内容 → 多平台帖子",
+    simple: "简单",
+    campaign: "7天活动",
+    brandVoice: "品牌声音",
+    voicePlaceholder: "例如：专业、幽默、励志...",
+    voices: ["专业", "幽默", "励志", "教育", "直接"],
+    placeholder: "在此粘贴您的内容",
+    charactersLabel: "字符",
+    minChars: "最少50个字符",
+    campaignGoal: "活动目标",
+    engagement: "互动",
+    authority: "权威",
+    conversion: "转化",
+    generate: "生成帖子",
+    generateCampaign: "生成活动",
+    generating: "生成中...",
+    error: "发生错误",
+    results: "结果",
+    history: "历史",
+    clearAll: "清除全部",
+    search: "搜索...",
+    noHistory: "无历史",
+    voice: "声音",
+    copy: "复制",
+    copied: "已复制！",
+    copyAll: "全部复制",
+    allCopied: "全部已复制！",
+    download: "下载",
+    newVersion: "新版本",
+    hook: "钩子",
+    rewrite: "重写",
+    hashtags: "标签",
+    copyHashtags: "复制标签",
+    bestTime: "最佳时间",
+    characters: "字符",
+    tooLong: "太长",
+    day: "天",
+    light: "浅色",
+    dark: "深色",
+  },
+  hi: {
+    studio: "स्टूडियो",
+    subtitle: "1 सामग्री → मल्टी-प्लेटफ़ॉर्म पोस्ट",
+    simple: "सरल",
+    campaign: "7-दिन अभियान",
+    brandVoice: "ब्रांड वॉयस",
+    voicePlaceholder: "उदा: पेशेवर, हास्यपूर्ण, प्रेरक...",
+    voices: ["पेशेवर", "हास्यपूर्ण", "प्रेरक", "शैक्षिक", "सीधा"],
+    placeholder: "अपनी सामग्री यहाँ पेस्ट करें",
+    charactersLabel: "अक्षर",
+    minChars: "न्यूनतम 50 अक्षर",
+    campaignGoal: "अभियान लक्ष्य",
+    engagement: "एंगेजमेंट",
+    authority: "अथॉरिटी",
+    conversion: "कन्वर्जन",
+    generate: "पोस्ट जनरेट करें",
+    generateCampaign: "अभियान जनरेट करें",
+    generating: "जनरेट हो रहा है...",
+    error: "एक त्रुटि हुई",
+    results: "परिणाम",
+    history: "इतिहास",
+    clearAll: "सब साफ करें",
+    search: "खोजें...",
+    noHistory: "कोई इतिहास नहीं",
+    voice: "आवाज़",
+    copy: "कॉपी",
+    copied: "कॉपी हो गया!",
+    copyAll: "सब कॉपी करें",
+    allCopied: "सब कॉपी हो गया!",
+    download: "डाउनलोड",
+    newVersion: "नया संस्करण",
+    hook: "हुक",
+    rewrite: "फिर से लिखें",
+    hashtags: "हैशटैग",
+    copyHashtags: "हैशटैग कॉपी करें",
+    bestTime: "सबसे अच्छा समय",
+    characters: "अक्षर",
+    tooLong: "बहुत लंबा",
+    day: "दिन",
+    light: "लाइट",
+    dark: "डार्क",
+  },
+  ar: {
+    studio: "استوديو",
+    subtitle: "محتوى واحد → منشورات متعددة المنصات",
+    simple: "بسيط",
+    campaign: "حملة 7 أيام",
+    brandVoice: "صوت العلامة",
+    voicePlaceholder: "مثال: احترافي، فكاهي، ملهم...",
+    voices: ["احترافي", "فكاهي", "ملهم", "تعليمي", "مباشر"],
+    placeholder: "الصق محتواك هنا",
+    charactersLabel: "حرف",
+    minChars: "50 حرف كحد أدنى",
+    campaignGoal: "هدف الحملة",
+    engagement: "تفاعل",
+    authority: "سلطة",
+    conversion: "تحويل",
+    generate: "إنشاء المنشورات",
+    generateCampaign: "إنشاء الحملة",
+    generating: "جاري الإنشاء...",
+    error: "حدث خطأ",
+    results: "النتائج",
+    history: "السجل",
+    clearAll: "مسح الكل",
+    search: "بحث...",
+    noHistory: "لا يوجد سجل",
+    voice: "الصوت",
+    copy: "نسخ",
+    copied: "تم النسخ!",
+    copyAll: "نسخ الكل",
+    allCopied: "تم نسخ الكل!",
+    download: "تحميل",
+    newVersion: "نسخة جديدة",
+    hook: "خطاف",
+    rewrite: "إعادة كتابة",
+    hashtags: "هاشتاجات",
+    copyHashtags: "نسخ الهاشتاجات",
+    bestTime: "أفضل وقت",
+    characters: "حرف",
+    tooLong: "طويل جداً",
+    day: "يوم",
+    light: "فاتح",
+    dark: "داكن",
+  },
+  de: {
+    studio: "Studio",
+    subtitle: "1 Inhalt → Multi-Plattform-Posts",
+    simple: "Einfach",
+    campaign: "7-Tage-Kampagne",
+    brandVoice: "Markenstimme",
+    voicePlaceholder: "Z.B.: professionell, humorvoll, inspirierend...",
+    voices: ["Professionell", "Humorvoll", "Inspirierend", "Lehrreich", "Direkt"],
+    placeholder: "Fügen Sie Ihren Inhalt hier ein",
+    charactersLabel: "Zeichen",
+    minChars: "Mindestens 50 Zeichen",
+    campaignGoal: "Kampagnenziel",
+    engagement: "Engagement",
+    authority: "Autorität",
+    conversion: "Conversion",
+    generate: "Posts generieren",
+    generateCampaign: "Kampagne generieren",
+    generating: "Generiere...",
+    error: "Ein Fehler ist aufgetreten",
+    results: "Ergebnisse",
+    history: "Verlauf",
+    clearAll: "Alles löschen",
+    search: "Suchen...",
+    noHistory: "Kein Verlauf",
+    voice: "Stimme",
+    copy: "Kopieren",
+    copied: "Kopiert!",
+    copyAll: "Alles kopieren",
+    allCopied: "Alles kopiert!",
+    download: "Herunterladen",
+    newVersion: "Neue Version",
+    hook: "Hook",
+    rewrite: "Umschreiben",
+    hashtags: "Hashtags",
+    copyHashtags: "Hashtags kopieren",
+    bestTime: "Beste Zeit",
+    characters: "Zeichen",
+    tooLong: "Zu lang",
+    day: "Tag",
+    light: "Hell",
+    dark: "Dunkel",
+  },
+  ja: {
+    studio: "スタジオ",
+    subtitle: "1つのコンテンツ → マルチプラットフォーム投稿",
+    simple: "シンプル",
+    campaign: "7日間キャンペーン",
+    brandVoice: "ブランドボイス",
+    voicePlaceholder: "例：プロフェッショナル、ユーモラス、インスピレーション...",
+    voices: ["プロフェッショナル", "ユーモラス", "インスピレーション", "教育的", "直接的"],
+    placeholder: "コンテンツをここに貼り付けてください",
+    charactersLabel: "文字",
+    minChars: "最低50文字",
+    campaignGoal: "キャンペーン目標",
+    engagement: "エンゲージメント",
+    authority: "権威",
+    conversion: "コンバージョン",
+    generate: "投稿を生成",
+    generateCampaign: "キャンペーンを生成",
+    generating: "生成中...",
+    error: "エラーが発生しました",
+    results: "結果",
+    history: "履歴",
+    clearAll: "すべてクリア",
+    search: "検索...",
+    noHistory: "履歴なし",
+    voice: "ボイス",
+    copy: "コピー",
+    copied: "コピーしました！",
+    copyAll: "すべてコピー",
+    allCopied: "すべてコピーしました！",
+    download: "ダウンロード",
+    newVersion: "新しいバージョン",
+    hook: "フック",
+    rewrite: "書き直し",
+    hashtags: "ハッシュタグ",
+    copyHashtags: "ハッシュタグをコピー",
+    bestTime: "最適な時間",
+    characters: "文字",
+    tooLong: "長すぎる",
+    day: "日",
+    light: "ライト",
+    dark: "ダーク",
+  },
+  id: {
+    studio: "Studio",
+    subtitle: "1 konten → posting multi-platform",
+    simple: "Sederhana",
+    campaign: "Kampanye 7 hari",
+    brandVoice: "Suara Merek",
+    voicePlaceholder: "Contoh: profesional, humoris, menginspirasi...",
+    voices: ["Profesional", "Humoris", "Menginspirasi", "Edukatif", "Langsung"],
+    placeholder: "Tempel konten Anda di sini",
+    charactersLabel: "karakter",
+    minChars: "Minimal 50 karakter",
+    campaignGoal: "Tujuan kampanye",
+    engagement: "Engagement",
+    authority: "Otoritas",
+    conversion: "Konversi",
+    generate: "Buat posting",
+    generateCampaign: "Buat kampanye",
+    generating: "Membuat...",
+    error: "Terjadi kesalahan",
+    results: "Hasil",
+    history: "Riwayat",
+    clearAll: "Hapus semua",
+    search: "Cari...",
+    noHistory: "Tidak ada riwayat",
+    voice: "Suara",
+    copy: "Salin",
+    copied: "Tersalin!",
+    copyAll: "Salin semua",
+    allCopied: "Semua tersalin!",
+    download: "Unduh",
+    newVersion: "Versi baru",
+    hook: "Hook",
+    rewrite: "Tulis ulang",
+    hashtags: "Hashtag",
+    copyHashtags: "Salin hashtag",
+    bestTime: "Waktu terbaik",
+    characters: "karakter",
+    tooLong: "Terlalu panjang",
+    day: "Hari",
+    light: "Terang",
+    dark: "Gelap",
+  },
 };
-
-type Day = {
-  day: number;
-  theme: string;
-  platform: string;
-  post: string;
-  goal?: string;
-  bestTime?: string;
-};
-
-function formatResult(data: unknown): { text: string; score?: number } {
-  if (typeof data === "string") return { text: data };
-  if (!data || typeof data !== "object") return { text: JSON.stringify(data, null, 2) };
-  const o = data as Record<string, unknown>;
-  const score = typeof o.score === "number" ? o.score : undefined;
-  if (typeof o.post === "string") return { text: o.post, score };
-  if (typeof o.caption === "string") return { text: o.caption, score };
-  if (typeof o.script === "string") return { text: o.script, score };
-  if (Array.isArray(o.thread)) return { text: (o.thread as string[]).join("\n\n"), score };
-  return { text: JSON.stringify(data, null, 2), score };
-}
-
-function loadHistory(): HistoryItem[] {
-  try {
-    const raw = localStorage.getItem(HISTORY_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
-}
-
-function saveHistory(items: HistoryItem[]) {
-  localStorage.setItem(HISTORY_KEY, JSON.stringify(items.slice(0, MAX_HISTORY)));
-}
-
-export default function DashboardPage() {
-  const [lang, setLang] = useState<Lang>("fr");
-  const t = translations[lang] || translations.fr;
-
-  const [mode, setMode] = useState<"simple" | "campaign">("simple");
-  const [text, setText] = useState("");
-  const [brandVoice, setBrandVoice] = useState("");
-  const [selected, setSelected] = useState<string[]>(["linkedin", "twitter"]);
-  const [objective, setObjective] = useState("engagement");
-  const [loading, setLoading] = useState(false);
-  const [results, setResults] = useState<Record<string, unknown> | null>(null);
-  const [campaign, setCampaign] = useState<{
-    campaignTitle?: string;
-    strategy?: string;
-    days?: Day[];
-  } | null>(null);
-  const [error, setError] = useState("");
-  const [copied, setCopied] = useState<string | null>(null);
-  const [history, setHistory] = useState<HistoryItem[]>([]);
-  const [showHistory, setShowHistory] = useState(false);
-  const [dark, setDark] = useState(true);
-  const [search, setSearch] = useState("");
-  const [rewriting, setRewriting] = useState<string | null>(null);
-  const [hashtags, setHashtags] = useState<Record<string, string[]>>({});
-  const [loadingHashtags, setLoadingHashtags] = useState<string | null>(null);
-  const [improvingHook, setImprovingHook] = useState<string | null>(null);
-
-  useEffect(() => {
-    setHistory(loadHistory());
-    const saved = localStorage.getItem(LANG_KEY) as Lang | null;
-    if (saved && translations[saved]) setLang(saved);
-  }, []);
-
-  const changeLang = (newLang: Lang) => {
-    setLang(newLang);
-    localStorage.setItem(LANG_KEY, newLang);
-  };
-
-  const toggle = (id: string) => {
-    setSelected((prev) =>
-      prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id]
-    );
-  };
-
-  const pushHistory = (item: HistoryItem) => {
-    const next = [item, ...loadHistory()].slice(0, MAX_HISTORY);
-    saveHistory(next);
-    setHistory(next);
-  };
-
-  const generate = async () => {
-    setError("");
-    setResults(null);
-    setCampaign(null);
-    setHashtags({});
-    if (text.length < 50) {
-      setError(t.minChars);
-      return;
-    }
-    setLoading(true);
-    try {
-      if (mode === "campaign") {
-        const res = await fetch("/api/campaign", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text, objective, brandVoice }),
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || t.error);
-        setCampaign(data.campaign);
-        pushHistory({
-          id: Date.now().toString(),
-          date: new Date().toLocaleString(),
-          mode: "campaign",
-          preview: text.slice(0, 80) + (text.length > 80 ? "..." : ""),
-          brandVoice,
-          objective,
-          campaign: data.campaign,
-        });
-      } else {
-        const res = await fetch("/api/generate", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text, platforms: selected, brandVoice }),
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || t.error);
-        setResults(data.results);
-        pushHistory({
-          id: Date.now().toString(),
-          date: new Date().toLocaleString(),
-          mode: "simple",
-          preview: text.slice(0, 80) + (text.length > 80 ? "..." : ""),
-          brandVoice,
-          results: data.results,
-        });
-      }
-    } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : t.error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const rewrite = async (platform: string, content: string) => {
-    setRewriting(platform);
-    try {
-      const res = await fetch("/api/rewrite", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: content, tone: "plus percutant et engageant" }),
-      });
-      const data = await res.json();
-      if (data.rewritten && results) {
-        setResults({
-          ...results,
-          [platform]: { ...(results[platform] as object), post: data.rewritten, caption: data.rewritten, script: data.rewritten },
-        });
-      }
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setRewriting(null);
-    }
-  };
-
-  const improveHook = async (platform: string, content: string) => {
-    setImprovingHook(platform);
-    try {
-      const res = await fetch("/api/hook", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: content }),
-      });
-      const data = await res.json();
-      if (data.improved && results) {
-        setResults({
-          ...results,
-          [platform]: { ...(results[platform] as object), post: data.improved, caption: data.improved, script: data.improved },
-        });
-      }
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setImprovingHook(null);
-    }
-  };
-
-  const fetchHashtags = async (platform: string, content: string) => {
-    setLoadingHashtags(platform);
-    try {
-      const res = await fetch("/api/hashtags", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: content, platform }),
-      });
-      const data = await res.json();
-      if (data.hashtags) {
-        setHashtags((prev) => ({ ...prev, [platform]: data.hashtags }));
-      }
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setLoadingHashtags(null);
-    }
-  };
-
-  const copy = async (key: string, content: string) => {
-    await navigator.clipboard.writeText(content);
-    setCopied(key);
-    setTimeout(() => setCopied(null), 2000);
-  };
-
-  const copyAll = async () => {
-    let content = "";
-    if (results) {
-      content = Object.entries(results)
-        .map(([platform, data]) => {
-          const { text } = formatResult(data);
-          return `=== ${platform.toUpperCase()} ===\n${text}`;
-        })
-        .join("\n\n");
-    } else if (campaign) {
-      content = `${campaign.campaignTitle || "Campagne 7 jours"}\n${campaign.strategy || ""}\n\n`;
-      content += (campaign.days || [])
-        .map((d) => `=== JOUR ${d.day} — ${d.theme} (${d.platform}) ===\n${d.post}`)
-        .join("\n\n");
-    }
-    if (content) {
-      await navigator.clipboard.writeText(content);
-      setCopied("all");
-      setTimeout(() => setCopied(null), 2000);
-    }
-  };
-
-  const downloadTxt = () => {
-    let content = "";
-    if (results) {
-      content = Object.entries(results)
-        .map(([platform, data]) => {
-          const { text } = formatResult(data);
-          return `=== ${platform.toUpperCase()} ===\n${text}`;
-        })
-        .join("\n\n");
-    } else if (campaign) {
-      content = `${campaign.campaignTitle || "Campagne"}\n${campaign.strategy || ""}\n\n`;
-      content += (campaign.days || [])
-        .map((d) => `=== JOUR ${d.day} — ${d.theme} (${d.platform}) ===\n${d.post}`)
-        .join("\n\n");
-    }
-    const blob = new Blob([content], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "stratify-export.txt";
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
-  const openHistoryItem = (item: HistoryItem) => {
-    setMode(item.mode);
-    setResults(item.results || null);
-    setCampaign(item.campaign || null);
-    setBrandVoice(item.brandVoice || "");
-    if (item.objective) setObjective(item.objective);
-    setText(item.preview.replace(/\.\.\.$/, ""));
-    setShowHistory(false);
-  };
-
-  const clearHistory = () => {
-    localStorage.removeItem(HISTORY_KEY);
-    setHistory([]);
-  };
-
-  const toggleFavorite = (id: string) => {
-    const updated = history.map((h) =>
-      h.id === id ? { ...h, favorite: !h.favorite } : h
-    );
-    saveHistory(updated);
-    setHistory(updated);
-  };
-
-  const filteredHistory = history.filter(
-    (item) =>
-      item.preview.toLowerCase().includes(search.toLowerCase()) ||
-      (item.brandVoice || "").toLowerCase().includes(search.toLowerCase())
-  );
-
-  
-  
