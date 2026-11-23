@@ -85,6 +85,7 @@ export default function DashboardPage() {
   const [rewriting, setRewriting] = useState<string | null>(null);
   const [hashtags, setHashtags] = useState<Record<string, string[]>>({});
   const [loadingHashtags, setLoadingHashtags] = useState<string | null>(null);
+  const [improvingHook, setImprovingHook] = useState<string | null>(null);
 
   useEffect(() => {
     setHistory(loadHistory());
@@ -175,6 +176,28 @@ export default function DashboardPage() {
       console.error(e);
     } finally {
       setRewriting(null);
+    }
+  };
+
+  const improveHook = async (platform: string, content: string) => {
+    setImprovingHook(platform);
+    try {
+      const res = await fetch("/api/hook", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: content }),
+      });
+      const data = await res.json();
+      if (data.improved && results) {
+        setResults({
+          ...results,
+          [platform]: { ...(results[platform] as object), post: data.improved, caption: data.improved, script: data.improved },
+        });
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setImprovingHook(null);
     }
   };
 
@@ -468,6 +491,10 @@ export default function DashboardPage() {
             <h2 className="text-lg font-semibold">Resultats</h2>
             {Object.entries(results).map(([platform, data]) => {
               const { text: content, score } = formatResult(data);
+              const tooLong =
+                (platform === "twitter" && content.length > 280) ||
+                (platform === "linkedin" && content.length > 3000) ||
+                (platform === "instagram" && content.length > 2200);
               return (
                 <div key={platform} className={`rounded-xl border p-5 ${dark ? "border-slate-700 bg-slate-900/80" : "border-slate-200 bg-slate-50"}`}>
                   <div className="flex items-center justify-between mb-1">
@@ -475,7 +502,15 @@ export default function DashboardPage() {
                       <span className="capitalize font-medium text-violet-300">{platform}</span>
                       {score !== undefined && <span className="text-xs text-slate-500">Score {score}/10</span>}
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 flex-wrap justify-end">
+                      <button
+                        type="button"
+                        onClick={() => improveHook(platform, content)}
+                        disabled={improvingHook === platform}
+                        className="text-xs px-3 py-1.5 rounded-lg border border-slate-600 hover:bg-slate-800 disabled:opacity-50"
+                      >
+                        {improvingHook === platform ? "..." : "Hook"}
+                      </button>
                       <button
                         type="button"
                         onClick={() => rewrite(platform, content)}
@@ -508,13 +543,26 @@ export default function DashboardPage() {
                     {platform === "tiktok" && "Meilleur moment : Samedi 19h"}
                   </div>
                   <pre className="text-sm whitespace-pre-wrap font-sans leading-relaxed">{content}</pre>
+                  <div className={`text-xs mt-2 ${tooLong ? "text-red-400" : "text-slate-500"}`}>
+                    {content.length} caractères
+                    {tooLong && " · Trop long pour cette plateforme"}
+                  </div>
                   {hashtags[platform] && hashtags[platform].length > 0 && (
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {hashtags[platform].map((tag) => (
-                        <span key={tag} className="text-xs px-2 py-1 rounded-full bg-violet-900/40 text-violet-300">
-                          {tag}
-                        </span>
-                      ))}
+                    <div className="mt-3">
+                      <div className="flex flex-wrap gap-2">
+                        {hashtags[platform].map((tag) => (
+                          <span key={tag} className="text-xs px-2 py-1 rounded-full bg-violet-900/40 text-violet-300">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => copy(platform + "-tags", hashtags[platform].join(" "))}
+                        className="text-xs mt-2 text-violet-400 hover:underline"
+                      >
+                        {copied === platform + "-tags" ? "Copié !" : "Copier les hashtags"}
+                      </button>
                     </div>
                   )}
                 </div>
