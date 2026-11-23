@@ -464,6 +464,12 @@ export default function DashboardPage() {
                     <div className="flex items-center gap-2">
                       <span className="capitalize font-medium text-violet-300">{platform}</span>
                       {score !== undefined && <span className="text-xs text-slate-500">Score {score}/10</span>}
+                      <div className="text-xs text-slate-500 mt-1">
+  {platform === "linkedin" && "Meilleur moment : Mardi 9h"}
+  {platform === "twitter" && "Meilleur moment : Mercredi 12h"}
+  {platform === "instagram" && "Meilleur moment : Vendredi 18h"}
+  {platform === "tiktok" && "Meilleur moment : Samedi 19h"}
+</div>
                     </div>
                     <button type="button" onClick={() => copy(platform, content)} className="text-xs px-3 py-1.5 rounded-lg border border-slate-600 hover:bg-slate-800">
                       {copied === platform ? "Copie !" : "Copier"}
