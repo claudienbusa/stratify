@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { translations, Lang } from "@/lib/translations";
 
 const PLATFORMS = [
   { id: "linkedin", label: "LinkedIn" },
@@ -12,6 +13,7 @@ const PLATFORMS = [
 
 const HISTORY_KEY = "stratify_history";
 const MAX_HISTORY = 20;
+const LANG_KEY = "stratify_lang";
 
 type HistoryItem = {
   id: string;
@@ -64,6 +66,9 @@ function saveHistory(items: HistoryItem[]) {
 }
 
 export default function DashboardPage() {
+  const [lang, setLang] = useState<Lang>("fr");
+  const t = translations[lang] || translations.fr;
+
   const [mode, setMode] = useState<"simple" | "campaign">("simple");
   const [text, setText] = useState("");
   const [brandVoice, setBrandVoice] = useState("");
@@ -89,7 +94,14 @@ export default function DashboardPage() {
 
   useEffect(() => {
     setHistory(loadHistory());
+    const saved = localStorage.getItem(LANG_KEY) as Lang | null;
+    if (saved && translations[saved]) setLang(saved);
   }, []);
+
+  const changeLang = (newLang: Lang) => {
+    setLang(newLang);
+    localStorage.setItem(LANG_KEY, newLang);
+  };
 
   const toggle = (id: string) => {
     setSelected((prev) =>
@@ -309,9 +321,17 @@ export default function DashboardPage() {
             Stratify
           </Link>
           <div className="flex items-center gap-3">
+            <select
+              value={lang}
+              onChange={(e) => changeLang(e.target.value as Lang)}
+              className="text-xs bg-transparent border border-slate-700 rounded px-2 py-1"
+            >
+              <option value="fr">Français</option>
+              <option value="en">English</option>
+              <option value="es">Español</option>
+            </select>
             <span className="text-xs text-slate-500">
-              {history.length} gen. · {history.filter((h) => h.mode === "simple").length} simple ·{" "}
-              {history.filter((h) => h.mode === "campaign").length} camp.
+              {history.length} gen.
             </span>
             <button
               type="button"
@@ -325,7 +345,7 @@ export default function DashboardPage() {
               onClick={() => setShowHistory((v) => !v)}
               className="text-xs px-3 py-1.5 rounded-lg border border-slate-700 hover:bg-slate-900"
             >
-              Historique
+              {t.history}
             </button>
           </div>
         </div>
@@ -335,7 +355,7 @@ export default function DashboardPage() {
         {showHistory && (
           <div className={`mb-8 rounded-xl border p-4 ${dark ? "border-slate-700 bg-slate-900" : "border-slate-200 bg-slate-50"}`}>
             <div className="flex items-center justify-between mb-3">
-              <h2 className="font-semibold">Historique local</h2>
+              <h2 className="font-semibold">{t.history}</h2>
               <button type="button" onClick={clearHistory} className="text-xs text-slate-500 hover:text-red-400">
                 Tout effacer
               </button>
@@ -378,8 +398,8 @@ export default function DashboardPage() {
           </div>
         )}
 
-        <h1 className="text-2xl font-bold mb-1">Studio</h1>
-        <p className="text-slate-400 text-sm mb-6">1 contenu source → posts ou campagne 7 jours</p>
+        <h1 className="text-2xl font-bold mb-1">{t.studio}</h1>
+        <p className="text-slate-400 text-sm mb-6">{t.subtitle}</p>
 
         <div className={`flex gap-2 mb-6 p-1 rounded-xl border w-fit ${dark ? "bg-slate-900 border-slate-800" : "bg-slate-100 border-slate-200"}`}>
           <button
@@ -387,19 +407,19 @@ export default function DashboardPage() {
             onClick={() => setMode("simple")}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition ${mode === "simple" ? "bg-violet-600 text-white" : "text-slate-400"}`}
           >
-            Mode Simple
+            {t.simple}
           </button>
           <button
             type="button"
             onClick={() => setMode("campaign")}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition ${mode === "campaign" ? "bg-violet-600 text-white" : "text-slate-400"}`}
           >
-            Campagne 7 jours
+            {t.campaign}
           </button>
         </div>
 
         <div className="mb-4">
-          <label className="text-sm text-slate-400 block mb-2">Brand Voice (optionnel)</label>
+          <label className="text-sm text-slate-400 block mb-2">{t.brandVoice}</label>
           <input
             type="text"
             value={brandVoice}
@@ -465,7 +485,7 @@ export default function DashboardPage() {
           className="w-full py-3.5 rounded-xl bg-violet-600 hover:bg-violet-500 font-medium disabled:opacity-50 transition flex items-center justify-center gap-2"
         >
           {loading && <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />}
-          {loading ? "Generation en cours..." : mode === "campaign" ? "Generer la campagne 7 jours" : "Generer les posts"}
+          {loading ? "Generation en cours..." : mode === "campaign" ? t.generateCampaign : t.generate}
         </button>
 
         {error && (
@@ -481,7 +501,7 @@ export default function DashboardPage() {
               {copied === "all" ? "Tout copié !" : "Copier tout"}
             </button>
             <button type="button" onClick={downloadTxt} className="text-sm px-4 py-2 rounded-lg border border-slate-600 hover:bg-slate-800">
-              Télécharger .txt
+              {t.download}
             </button>
           </div>
         )}
@@ -509,7 +529,7 @@ export default function DashboardPage() {
                         disabled={improvingHook === platform}
                         className="text-xs px-3 py-1.5 rounded-lg border border-slate-600 hover:bg-slate-800 disabled:opacity-50"
                       >
-                        {improvingHook === platform ? "..." : "Hook"}
+                        {improvingHook === platform ? "..." : t.hook}
                       </button>
                       <button
                         type="button"
@@ -517,7 +537,7 @@ export default function DashboardPage() {
                         disabled={rewriting === platform}
                         className="text-xs px-3 py-1.5 rounded-lg border border-slate-600 hover:bg-slate-800 disabled:opacity-50"
                       >
-                        {rewriting === platform ? "..." : "Réécrire"}
+                        {rewriting === platform ? "..." : t.rewrite}
                       </button>
                       <button
                         type="button"
@@ -525,27 +545,27 @@ export default function DashboardPage() {
                         disabled={loadingHashtags === platform}
                         className="text-xs px-3 py-1.5 rounded-lg border border-slate-600 hover:bg-slate-800 disabled:opacity-50"
                       >
-                        {loadingHashtags === platform ? "..." : "Hashtags"}
+                        {loadingHashtags === platform ? "..." : t.hashtags}
                       </button>
                       <button
                         type="button"
                         onClick={() => copy(platform, content)}
                         className="text-xs px-3 py-1.5 rounded-lg border border-slate-600 hover:bg-slate-800"
                       >
-                        {copied === platform ? "Copie !" : "Copier"}
+                        {copied === platform ? "Copie !" : t.copy}
                       </button>
                     </div>
                   </div>
                   <div className="text-xs text-slate-500 mb-3">
-                    {platform === "linkedin" && "Meilleur moment : Mardi 9h"}
-                    {platform === "twitter" && "Meilleur moment : Mercredi 12h"}
-                    {platform === "instagram" && "Meilleur moment : Vendredi 18h"}
-                    {platform === "tiktok" && "Meilleur moment : Samedi 19h"}
+                    {t.bestTime} : {platform === "linkedin" && "Mardi 9h"}
+                    {platform === "twitter" && "Mercredi 12h"}
+                    {platform === "instagram" && "Vendredi 18h"}
+                    {platform === "tiktok" && "Samedi 19h"}
                   </div>
                   <pre className="text-sm whitespace-pre-wrap font-sans leading-relaxed">{content}</pre>
                   <div className={`text-xs mt-2 ${tooLong ? "text-red-400" : "text-slate-500"}`}>
-                    {content.length} caractères
-                    {tooLong && " · Trop long pour cette plateforme"}
+                    {content.length} {t.characters}
+                    {tooLong && ` · ${t.tooLong}`}
                   </div>
                   {hashtags[platform] && hashtags[platform].length > 0 && (
                     <div className="mt-3">
@@ -596,7 +616,7 @@ export default function DashboardPage() {
                     onClick={() => copy("day-" + day.day, day.post)}
                     className="text-xs px-3 py-1.5 rounded-lg border border-slate-600 hover:bg-slate-800 shrink-0"
                   >
-                    {copied === "day-" + day.day ? "Copie !" : "Copier"}
+                    {copied === "day-" + day.day ? "Copie !" : t.copy}
                   </button>
                 </div>
                 <pre className="text-sm whitespace-pre-wrap font-sans leading-relaxed">{day.post}</pre>
