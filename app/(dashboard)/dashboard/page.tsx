@@ -433,7 +433,7 @@ export default function DashboardPage() {
             className={`w-full rounded-xl px-4 py-2.5 text-sm border focus:outline-none focus:ring-2 focus:ring-violet-500 ${dark ? "bg-slate-900 border-slate-700" : "bg-white border-slate-300"}`}
           />
           <div className="flex flex-wrap gap-2 mt-2">
-            {["Professionnel et clair", "Direct et percutant", "Pédagogique avec exemples", "Humoristique léger", "Expert technique"].map((voice) => (
+             {(t.voices || []).map((voice) => (
               <button
                 key={voice}
                 type="button"
