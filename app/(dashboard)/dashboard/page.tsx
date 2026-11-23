@@ -452,6 +452,12 @@ export default function DashboardPage() {
             <h2 className="text-lg font-semibold">Resultats</h2>
             {Object.entries(results).map(([platform, data]) => {
               const { text: content, score } = formatResult(data);
+            <div className="text-xs text-slate-500 mt-1">
+  {platform === "linkedin" && "Meilleur moment : Mardi 9h"}
+  {platform === "twitter" && "Meilleur moment : Mercredi 12h"}
+  {platform === "instagram" && "Meilleur moment : Vendredi 18h"}
+  {platform === "tiktok" && "Meilleur moment : Samedi 19h"}
+</div>
               return (
                 <div key={platform} className={`rounded-xl border p-5 ${dark ? "border-slate-700 bg-slate-900/80" : "border-slate-200 bg-slate-50"}`}>
                   <div className="flex items-center justify-between mb-3">
