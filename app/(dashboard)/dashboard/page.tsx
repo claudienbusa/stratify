@@ -83,6 +83,8 @@ export default function DashboardPage() {
   const [dark, setDark] = useState(true);
   const [search, setSearch] = useState("");
   const [rewriting, setRewriting] = useState<string | null>(null);
+  const [hashtags, setHashtags] = useState<Record<string, string[]>>({});
+  const [loadingHashtags, setLoadingHashtags] = useState<string | null>(null);
 
   useEffect(() => {
     setHistory(loadHistory());
@@ -104,6 +106,7 @@ export default function DashboardPage() {
     setError("");
     setResults(null);
     setCampaign(null);
+    setHashtags({});
     if (text.length < 50) {
       setError("Minimum 50 caracteres.");
       return;
@@ -172,6 +175,25 @@ export default function DashboardPage() {
       console.error(e);
     } finally {
       setRewriting(null);
+    }
+  };
+
+  const fetchHashtags = async (platform: string, content: string) => {
+    setLoadingHashtags(platform);
+    try {
+      const res = await fetch("/api/hashtags", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: content, platform }),
+      });
+      const data = await res.json();
+      if (data.hashtags) {
+        setHashtags((prev) => ({ ...prev, [platform]: data.hashtags }));
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoadingHashtags(null);
     }
   };
 
@@ -309,11 +331,7 @@ export default function DashboardPage() {
                 {filteredHistory.map((item) => (
                   <li key={item.id}>
                     <div className={`flex items-start gap-2 rounded-lg border px-3 py-2 text-sm ${dark ? "border-slate-800" : "border-slate-200"}`}>
-                      <button
-                        type="button"
-                        onClick={() => openHistoryItem(item)}
-                        className="flex-1 text-left"
-                      >
+                      <button type="button" onClick={() => openHistoryItem(item)} className="flex-1 text-left">
                         <div className="flex justify-between gap-2 text-xs text-slate-500 mb-1">
                           <span>
                             {item.mode === "campaign" ? "Campagne" : "Simple"}
@@ -326,11 +344,7 @@ export default function DashboardPage() {
                           <div className="text-xs text-violet-400 mt-1 truncate">Voice: {item.brandVoice}</div>
                         )}
                       </button>
-                      <button
-                        type="button"
-                        onClick={() => toggleFavorite(item.id)}
-                        className="text-lg shrink-0"
-                      >
+                      <button type="button" onClick={() => toggleFavorite(item.id)} className="text-lg shrink-0">
                         {item.favorite ? "★" : "☆"}
                       </button>
                     </div>
@@ -472,6 +486,14 @@ export default function DashboardPage() {
                       </button>
                       <button
                         type="button"
+                        onClick={() => fetchHashtags(platform, content)}
+                        disabled={loadingHashtags === platform}
+                        className="text-xs px-3 py-1.5 rounded-lg border border-slate-600 hover:bg-slate-800 disabled:opacity-50"
+                      >
+                        {loadingHashtags === platform ? "..." : "Hashtags"}
+                      </button>
+                      <button
+                        type="button"
                         onClick={() => copy(platform, content)}
                         className="text-xs px-3 py-1.5 rounded-lg border border-slate-600 hover:bg-slate-800"
                       >
@@ -486,6 +508,15 @@ export default function DashboardPage() {
                     {platform === "tiktok" && "Meilleur moment : Samedi 19h"}
                   </div>
                   <pre className="text-sm whitespace-pre-wrap font-sans leading-relaxed">{content}</pre>
+                  {hashtags[platform] && hashtags[platform].length > 0 && (
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {hashtags[platform].map((tag) => (
+                        <span key={tag} className="text-xs px-2 py-1 rounded-full bg-violet-900/40 text-violet-300">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
               );
             })}
