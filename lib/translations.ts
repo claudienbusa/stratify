@@ -16,6 +16,7 @@ export const translations = {
     bestTime: "Best time",
     characters: "characters",
     tooLong: "Too long for this platform",
+    voices: ["Professional and clear", "Direct and impactful", "Educational with examples", "Light humor", "Technical expert"],
   },
   fr: {
     studio: "Studio",
@@ -34,6 +35,7 @@ export const translations = {
     bestTime: "Meilleur moment",
     characters: "caractères",
     tooLong: "Trop long pour cette plateforme",
+    voices: ["Professionnel et clair", "Direct et percutant", "Pédagogique avec exemples", "Humoristique léger", "Expert technique"],
   },
   es: {
     studio: "Estudio",
@@ -52,6 +54,7 @@ export const translations = {
     bestTime: "Mejor momento",
     characters: "caracteres",
     tooLong: "Demasiado largo para esta plataforma",
+    voices: ["Profesional y claro", "Directo e impactante", "Educativo con ejemplos", "Humor ligero", "Experto técnico"],
   },
   pt: {
     studio: "Estúdio",
@@ -70,6 +73,7 @@ export const translations = {
     bestTime: "Melhor momento",
     characters: "caracteres",
     tooLong: "Muito longo para esta plataforma",
+    voices: ["Profissional e claro", "Direto e impactante", "Educativo com exemplos", "Humor leve", "Especialista técnico"],
   },
   zh: {
     studio: "工作室",
@@ -88,6 +92,7 @@ export const translations = {
     bestTime: "最佳时间",
     characters: "字符",
     tooLong: "对此平台来说太长",
+    voices: ["专业清晰", "直接有力", "带例子的教学", "轻松幽默", "技术专家"],
   },
   hi: {
     studio: "स्टूडियो",
@@ -106,6 +111,7 @@ export const translations = {
     bestTime: "सबसे अच्छा समय",
     characters: "अक्षर",
     tooLong: "इस प्लेटफ़ॉर्म के लिए बहुत लंबा",
+    voices: ["पेशेवर और स्पष्ट", "प्रत्यक्ष और प्रभावशाली", "उदाहरणों के साथ शैक्षिक", "हल्का हास्य", "तकनीकी विशेषज्ञ"],
   },
   ar: {
     studio: "الاستوديو",
@@ -124,6 +130,7 @@ export const translations = {
     bestTime: "أفضل وقت",
     characters: "حرف",
     tooLong: "طويل جدًا لهذه المنصة",
+    voices: ["مهني وواضح", "مباشر ومؤثر", "تعليمي مع أمثلة", "فكاهة خفيفة", "خبير تقني"],
   },
   de: {
     studio: "Studio",
@@ -142,6 +149,7 @@ export const translations = {
     bestTime: "Beste Zeit",
     characters: "Zeichen",
     tooLong: "Zu lang für diese Plattform",
+    voices: ["Professionell und klar", "Direkt und wirkungsvoll", "Lehrreich mit Beispielen", "Leichter Humor", "Technischer Experte"],
   },
   ja: {
     studio: "スタジオ",
@@ -160,6 +168,7 @@ export const translations = {
     bestTime: "最適な時間",
     characters: "文字",
     tooLong: "このプラットフォームには長すぎます",
+    voices: ["プロフェッショナルで明確", "直接的でインパクトのある", "例を使った教育的", "軽いユーモア", "技術専門家"],
   },
   id: {
     studio: "Studio",
@@ -178,6 +187,7 @@ export const translations = {
     bestTime: "Waktu terbaik",
     characters: "karakter",
     tooLong: "Terlalu panjang untuk platform ini",
+    voices: ["Profesional dan jelas", "Langsung dan berdampak", "Edukasi dengan contoh", "Humor ringan", "Ahli teknis"],
   },
 };
 
