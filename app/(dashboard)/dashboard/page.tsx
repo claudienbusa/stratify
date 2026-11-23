@@ -429,11 +429,11 @@ export default function DashboardPage() {
             type="text"
             value={brandVoice}
             onChange={(e) => setBrandVoice(e.target.value)}
-            placeholder="Ex: professionnel et pédagogique..."
+            placeholder={t.voicePlaceholder}
             className={`w-full rounded-xl px-4 py-2.5 text-sm border focus:outline-none focus:ring-2 focus:ring-violet-500 ${dark ? "bg-slate-900 border-slate-700" : "bg-white border-slate-300"}`}
           />
           <div className="flex flex-wrap gap-2 mt-2">
-             {(t.voices || []).map((voice) => (
+            {(t.voices || []).map((voice) => (
               <button
                 key={voice}
                 type="button"
@@ -448,11 +448,11 @@ export default function DashboardPage() {
 
         <textarea
           className={`w-full min-h-[180px] rounded-xl p-4 text-sm border focus:outline-none focus:ring-2 focus:ring-violet-500 ${dark ? "bg-slate-900 border-slate-700" : "bg-white border-slate-300"}`}
-          placeholder="Colle ton script, article ou idee (min. 50 caracteres)..."
+          placeholder={t.placeholder}
           value={text}
           onChange={(e) => setText(e.target.value)}
         />
-        <div className="text-xs text-slate-500 mt-2 mb-4">{text.length} caracteres</div>
+        <div className="text-xs text-slate-500 mt-2 mb-4">{text.length} {t.charactersLabel}</div>
 
         {mode === "simple" && (
           <div className="flex flex-wrap gap-2 mb-4">
