@@ -17,6 +17,9 @@ export const translations = {
     characters: "characters",
     tooLong: "Too long for this platform",
     voices: ["Professional and clear", "Direct and impactful", "Educational with examples", "Light humor", "Technical expert"],
+    placeholder: "Paste your script, article or idea (min. 50 characters)...",
+    voicePlaceholder: "Ex: professional and educational...",
+    charactersLabel: "characters",
   },
   fr: {
     studio: "Studio",
@@ -36,6 +39,9 @@ export const translations = {
     characters: "caractères",
     tooLong: "Trop long pour cette plateforme",
     voices: ["Professionnel et clair", "Direct et percutant", "Pédagogique avec exemples", "Humoristique léger", "Expert technique"],
+    placeholder: "Colle ton script, article ou idée (min. 50 caractères)...",
+    voicePlaceholder: "Ex: professionnel et pédagogique...",
+    charactersLabel: "caractères",
   },
   es: {
     studio: "Estudio",
@@ -55,6 +61,9 @@ export const translations = {
     characters: "caracteres",
     tooLong: "Demasiado largo para esta plataforma",
     voices: ["Profesional y claro", "Directo e impactante", "Educativo con ejemplos", "Humor ligero", "Experto técnico"],
+    placeholder: "Pega tu guion, artículo o idea (mín. 50 caracteres)...",
+    voicePlaceholder: "Ej: profesional y educativo...",
+    charactersLabel: "caracteres",
   },
   pt: {
     studio: "Estúdio",
@@ -74,6 +83,9 @@ export const translations = {
     characters: "caracteres",
     tooLong: "Muito longo para esta plataforma",
     voices: ["Profissional e claro", "Direto e impactante", "Educativo com exemplos", "Humor leve", "Especialista técnico"],
+    placeholder: "Cole seu roteiro, artigo ou ideia (mín. 50 caracteres)...",
+    voicePlaceholder: "Ex: profissional e educacional...",
+    charactersLabel: "caracteres",
   },
   zh: {
     studio: "工作室",
@@ -93,6 +105,9 @@ export const translations = {
     characters: "字符",
     tooLong: "对此平台来说太长",
     voices: ["专业清晰", "直接有力", "带例子的教学", "轻松幽默", "技术专家"],
+    placeholder: "粘贴你的脚本、文章或想法（至少 50 个字符）...",
+    voicePlaceholder: "例如：专业且有教育意义...",
+    charactersLabel: "字符",
   },
   hi: {
     studio: "स्टूडियो",
@@ -112,6 +127,9 @@ export const translations = {
     characters: "अक्षर",
     tooLong: "इस प्लेटफ़ॉर्म के लिए बहुत लंबा",
     voices: ["पेशेवर और स्पष्ट", "प्रत्यक्ष और प्रभावशाली", "उदाहरणों के साथ शैक्षिक", "हल्का हास्य", "तकनीकी विशेषज्ञ"],
+    placeholder: "अपना स्क्रिप्ट, लेख या आइडिया पेस्ट करें (न्यूनतम 50 अक्षर)...",
+    voicePlaceholder: "उदा: पेशेवर और शैक्षिक...",
+    charactersLabel: "अक्षर",
   },
   ar: {
     studio: "الاستوديو",
@@ -131,6 +149,9 @@ export const translations = {
     characters: "حرف",
     tooLong: "طويل جدًا لهذه المنصة",
     voices: ["مهني وواضح", "مباشر ومؤثر", "تعليمي مع أمثلة", "فكاهة خفيفة", "خبير تقني"],
+    placeholder: "الصق السكربت أو المقال أو الفكرة (50 حرفًا على الأقل)...",
+    voicePlaceholder: "مثال: مهني وتعليمي...",
+    charactersLabel: "حرف",
   },
   de: {
     studio: "Studio",
@@ -150,6 +171,9 @@ export const translations = {
     characters: "Zeichen",
     tooLong: "Zu lang für diese Plattform",
     voices: ["Professionell und klar", "Direkt und wirkungsvoll", "Lehrreich mit Beispielen", "Leichter Humor", "Technischer Experte"],
+    placeholder: "Füge dein Skript, Artikel oder Idee ein (min. 50 Zeichen)...",
+    voicePlaceholder: "z.B.: professionell und lehrreich...",
+    charactersLabel: "Zeichen",
   },
   ja: {
     studio: "スタジオ",
@@ -169,6 +193,9 @@ export const translations = {
     characters: "文字",
     tooLong: "このプラットフォームには長すぎます",
     voices: ["プロフェッショナルで明確", "直接的でインパクトのある", "例を使った教育的", "軽いユーモア", "技術専門家"],
+    placeholder: "スクリプト、記事、またはアイデアを貼り付けてください（最低50文字）...",
+    voicePlaceholder: "例：プロフェッショナルで教育的...",
+    charactersLabel: "文字",
   },
   id: {
     studio: "Studio",
@@ -188,6 +215,9 @@ export const translations = {
     characters: "karakter",
     tooLong: "Terlalu panjang untuk platform ini",
     voices: ["Profesional dan jelas", "Langsung dan berdampak", "Edukasi dengan contoh", "Humor ringan", "Ahli teknis"],
+    placeholder: "Tempel skrip, artikel, atau ide Anda (min. 50 karakter)...",
+    voicePlaceholder: "Contoh: profesional dan edukatif...",
+    charactersLabel: "karakter",
   },
 };
 
