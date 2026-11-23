@@ -509,12 +509,21 @@ export default function DashboardPage() {
                   </div>
                   <pre className="text-sm whitespace-pre-wrap font-sans leading-relaxed">{content}</pre>
                   {hashtags[platform] && hashtags[platform].length > 0 && (
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {hashtags[platform].map((tag) => (
-                        <span key={tag} className="text-xs px-2 py-1 rounded-full bg-violet-900/40 text-violet-300">
-                          {tag}
-                        </span>
-                      ))}
+                    <div className="mt-3">
+                      <div className="flex flex-wrap gap-2">
+                        {hashtags[platform].map((tag) => (
+                          <span key={tag} className="text-xs px-2 py-1 rounded-full bg-violet-900/40 text-violet-300">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => copy(platform + "-tags", hashtags[platform].join(" "))}
+                        className="text-xs mt-2 text-violet-400 hover:underline"
+                      >
+                        {copied === platform + "-tags" ? "Copié !" : "Copier les hashtags"}
+                      </button>
                     </div>
                   )}
                 </div>
@@ -522,15 +531,6 @@ export default function DashboardPage() {
             })}
           </div>
         )}
-        {hashtags[platform] && hashtags[platform].length > 0 && (
-  <button
-    type="button"
-    onClick={() => copy(platform + "-tags", hashtags[platform].join(" "))}
-    className="text-xs mt-2 text-violet-400 hover:underline"
-  >
-    {copied === platform + "-tags" ? "Copié !" : "Copier les hashtags"}
-  </button>
-)}
 
         {campaign && mode === "campaign" && (
           <div className="mt-6 space-y-4">
