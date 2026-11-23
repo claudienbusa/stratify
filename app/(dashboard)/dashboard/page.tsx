@@ -522,6 +522,15 @@ export default function DashboardPage() {
             })}
           </div>
         )}
+        {hashtags[platform] && hashtags[platform].length > 0 && (
+  <button
+    type="button"
+    onClick={() => copy(platform + "-tags", hashtags[platform].join(" "))}
+    className="text-xs mt-2 text-violet-400 hover:underline"
+  >
+    {copied === platform + "-tags" ? "Copié !" : "Copier les hashtags"}
+  </button>
+)}
 
         {campaign && mode === "campaign" && (
           <div className="mt-6 space-y-4">
