@@ -6,7 +6,7 @@ import { translations, Lang } from "@/lib/translations";
 
 const LANG_KEY = "stratify_lang";
 
-const content: Record<string, {
+type PricingContent = {
   title: string;
   subtitle: string;
   free: string;
@@ -19,7 +19,9 @@ const content: Record<string, {
   featuresFree: string[];
   featuresPro: string[];
   featuresAgency: string[];
-}> = {
+};
+
+const content: Record<string, PricingContent> = {
   fr: {
     title: "Choisis ton plan",
     subtitle: "Commence gratuitement. Passe à Pro quand tu veux.",
@@ -268,7 +270,7 @@ export default function PricingPage() {
                 <span className="text-slate-400 text-sm"> {plan.period}</span>
               </div>
               <ul className="space-y-3 mb-8 flex-1">
-                {plan.features.map((f: string) => (
+                {plan.features.map((f) => (
                   <li key={f} className="text-sm text-slate-300 flex items-start gap-2">
                     <span className="text-violet-400">✓</span>
                     {f}
