@@ -130,7 +130,7 @@ export default function DashboardPage() {
         const res = await fetch("/api/campaign", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text, objective, brandVoice }),
+          body: JSON.stringify({ text, objective, brandVoice, lang }),
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || String(t.error));
@@ -148,7 +148,7 @@ export default function DashboardPage() {
         const res = await fetch("/api/generate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text, platforms: selected, brandVoice }),
+          body: JSON.stringify({ text, platforms: selected, brandVoice, lang }),
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || String(t.error));
@@ -175,7 +175,7 @@ export default function DashboardPage() {
       const res = await fetch("/api/rewrite", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: content, tone: "plus percutant et engageant" }),
+        body: JSON.stringify({ text: content, tone: "plus percutant et engageant", lang }),
       });
       const data = await res.json();
       if (data.rewritten && results) {
@@ -197,7 +197,7 @@ export default function DashboardPage() {
       const res = await fetch("/api/hook", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: content }),
+        body: JSON.stringify({ text: content, lang }),
       });
       const data = await res.json();
       if (data.improved && results) {
@@ -219,7 +219,7 @@ export default function DashboardPage() {
       const res = await fetch("/api/hashtags", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: content, platform }),
+        body: JSON.stringify({ text: content, platform, lang }),
       });
       const data = await res.json();
       if (data.hashtags) {
@@ -455,7 +455,7 @@ export default function DashboardPage() {
         </div>
 
         <div className="mb-4">
-          <label className="text-sm text-slate-400 block mb-2">{String(t.sourceContent)}</label>
+          <label className="text-sm text-slate-400 block mb-2">{String(t.placeholder)}</label>
           <textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
@@ -463,7 +463,9 @@ export default function DashboardPage() {
             placeholder={String(t.placeholder)}
             className={`w-full rounded-xl px-4 py-3 text-sm border ${dark ? "bg-slate-900 border-slate-700" : "bg-white border-slate-300"}`}
           />
-          <p className="text-xs text-slate-500 mt-1">{text.length} / 50 min</p>
+          <p className="text-xs text-slate-500 mt-1">
+            {text.length} {String(t.charactersLabel)} (min 50)
+          </p>
         </div>
 
         <div className="mb-4">
@@ -479,7 +481,7 @@ export default function DashboardPage() {
 
         {mode === "simple" && (
           <div className="mb-4">
-            <label className="text-sm text-slate-400 block mb-2">{String(t.platforms)}</label>
+            <label className="text-sm text-slate-400 block mb-2">Platforms</label>
             <div className="flex flex-wrap gap-2">
               {PLATFORMS.map((p) => (
                 <button
@@ -505,8 +507,7 @@ export default function DashboardPage() {
             >
               <option value="engagement">{String(t.engagement)}</option>
               <option value="authority">{String(t.authority)}</option>
-              <option value="leads">{String(t.leads)}</option>
-              <option value="sales">{String(t.sales)}</option>
+              <option value="conversion">{String(t.conversion)}</option>
             </select>
           </div>
         )}
@@ -578,7 +579,7 @@ export default function DashboardPage() {
                       {rewriting === platform ? "..." : String(t.rewrite)}
                     </button>
                     <button type="button" onClick={() => improveHook(platform, content)} disabled={improvingHook === platform} className="text-xs px-3 py-1.5 rounded-lg border border-slate-600">
-                      {improvingHook === platform ? "..." : "Hook"}
+                      {improvingHook === platform ? "..." : String(t.hook)}
                     </button>
                     <button type="button" onClick={() => fetchHashtags(platform, content)} disabled={loadingHashtags === platform} className="text-xs px-3 py-1.5 rounded-lg border border-slate-600">
                       {loadingHashtags === platform ? "..." : "#"}
@@ -606,7 +607,7 @@ export default function DashboardPage() {
             {(campaign.days || []).map((day) => (
               <div key={day.day} className={`rounded-xl border p-5 ${dark ? "border-slate-700 bg-slate-900/50" : "border-slate-200 bg-slate-50"}`}>
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="font-medium">Jour {day.day} — {day.theme}</h3>
+                  <h3 className="font-medium">{String(t.day)} {day.day} — {day.theme}</h3>
                   <span className="text-xs text-slate-500 capitalize">{day.platform}</span>
                 </div>
                 <pre className="text-sm whitespace-pre-wrap">{day.post}</pre>
