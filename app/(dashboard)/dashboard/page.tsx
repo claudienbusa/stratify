@@ -567,7 +567,7 @@ export default function DashboardPage() {
                   <div className="flex items-center justify-between mb-3">
                     <h3 className="font-medium capitalize">{platform}</h3>
                     {score !== undefined && (
-                      <span className="text-xs px-2 py-1 rounded bg-violet-900/50 text-violet-300">Score: {{lang === "fr" ? "Score" : lang === "es" ? "Puntuación" : lang === "pt" ? "Pontuação" : lang === "de" ? "Punktzahl" : lang === "ja" ? "スコア" : lang === "zh" ? "评分" : lang === "ar" ? "النتيجة" : lang === "hi" ? "स्कोर" : lang === "id" ? "Skor" : "Score"}: {score}/10</span>
+                      <span className="text-xs px-2 py-1 rounded bg-violet-900/50 text-violet-300">{lang === "fr" ? "Score" : lang === "es" ? "Puntuación" : lang === "pt" ? "Pontuação" : lang === "de" ? "Punktzahl" : lang === "ja" ? "スコア" : lang === "zh" ? "评分" : lang === "ar" ? "النتيجة" : lang === "hi" ? "स्कोर" : lang === "id" ? "Skor" : "Score"}: {score}/10</span>
                     )}
                   </div>
                   <pre className="text-sm whitespace-pre-wrap mb-4">{content}</pre>
