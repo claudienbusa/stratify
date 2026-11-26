@@ -1,12 +1,27 @@
 import { NextResponse } from "next/server";
 import { openai } from "@/lib/openai";
 
+const LANG_NAMES: Record<string, string> = {
+  fr: "French",
+  en: "English",
+  es: "Spanish",
+  pt: "Portuguese",
+  zh: "Chinese",
+  hi: "Hindi",
+  ar: "Arabic",
+  de: "German",
+  ja: "Japanese",
+  id: "Indonesian",
+};
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
     const text = (body.text || "").trim();
     const objective = body.objective || "engagement";
     const brandVoice = (body.brandVoice || "").trim();
+    const lang = body.lang || "fr";
+    const languageName = LANG_NAMES[lang] || "French";
 
     if (text.length < 50) {
       return NextResponse.json({ error: "TEXT_TOO_SHORT" }, { status: 400 });
@@ -30,6 +45,8 @@ export async function POST(req: Request) {
           content: `You are Stratify, an expert content strategist.
 Create a complete 7-day social media campaign from one source content.
 Main goal: ${goals[objective] || goals.engagement}${voice}
+
+IMPORTANT: Write the entire campaign (title, strategy, all posts) in ${languageName}.
 
 Respond ONLY with valid JSON in this exact shape:
 {
@@ -57,7 +74,7 @@ Rules:
 - Day 7: Clear CTA
 - Alternate platforms: linkedin, twitter, instagram, tiktok
 - Every "post" must be ready to publish
-- Write in the SAME LANGUAGE as the source content`,
+- Write everything in ${languageName}`,
         },
         { role: "user", content: "Source content:\n\n" + text },
       ],
