@@ -1,12 +1,27 @@
 import { NextResponse } from "next/server";
 import { openai } from "@/lib/openai";
 
+const LANG_NAMES: Record<string, string> = {
+  fr: "French",
+  en: "English",
+  es: "Spanish",
+  pt: "Portuguese",
+  zh: "Chinese",
+  hi: "Hindi",
+  ar: "Arabic",
+  de: "German",
+  ja: "Japanese",
+  id: "Indonesian",
+};
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
     const text = (body.text || "").trim();
     const platforms: string[] = body.platforms || ["linkedin", "twitter"];
     const brandVoice = (body.brandVoice || "").trim();
+    const lang = body.lang || "fr";
+    const languageName = LANG_NAMES[lang] || "French";
 
     if (text.length < 50) {
       return NextResponse.json({ error: "TEXT_TOO_SHORT" }, { status: 400 });
@@ -25,14 +40,16 @@ export async function POST(req: Request) {
 
 Your job is to turn one source content into high-performing, ready-to-publish posts for the requested platforms: ${platforms.join(", ")}.${voice}
 
+IMPORTANT: Write ALL posts in ${languageName}. Even if the source content is in another language, translate and write the final posts in ${languageName}.
+
 Core principles:
-- Write in the EXACT same language as the source
 - Every post must be ready to copy-paste and publish
 - Start with a strong hook
 - Deliver clear value
 - Use concrete language
 - End with a natural call-to-action when relevant
 - Include a quality score from 1 to 10 for each post
+
 Platform rules:
 - linkedin: professional insight or story, short paragraphs, 800-1600 characters, max 5 hashtags
 - twitter: either one sharp post (<280 chars) or a numbered thread of 3-6 tweets
