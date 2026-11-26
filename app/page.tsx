@@ -20,16 +20,54 @@ export default function Home() {
     localStorage.setItem(LANG_KEY, newLang);
   };
 
+  const texts = {
+    fr: {
+      badge: "AI Content Strategy",
+      title: "1 contenu. 7 jours de posts stratégiques.",
+      subtitle: "Transforme un article, un script ou une idée en posts prêts à publier pour LinkedIn, X, Instagram et TikTok.",
+      cta: "Essayer gratuitement",
+      secondary: "Voir les plans",
+      featuresTitle: "Pourquoi Stratify ?",
+      f1Title: "Mode Simple",
+      f1Desc: "Un contenu source → des posts optimisés pour chaque plateforme en quelques secondes.",
+      f2Title: "Campagne 7 jours",
+      f2Desc: "Une vraie stratégie : teaser, valeur, preuve sociale, conversation et CTA.",
+      f3Title: "Brand Voice",
+      f3Desc: "Garde le même ton partout. Professionnel, direct, pédagogique ou humoristique.",
+      platforms: "Compatible avec",
+    },
+    en: {
+      badge: "AI Content Strategy",
+      title: "1 content. 7 days of strategic posts.",
+      subtitle: "Turn an article, script or idea into ready-to-publish posts for LinkedIn, X, Instagram and TikTok.",
+      cta: "Try for free",
+      secondary: "View plans",
+      featuresTitle: "Why Stratify?",
+      f1Title: "Simple Mode",
+      f1Desc: "One source content → optimized posts for each platform in seconds.",
+      f2Title: "7-day Campaign",
+      f2Desc: "A real strategy: teaser, value, social proof, conversation and CTA.",
+      f3Title: "Brand Voice",
+      f3Desc: "Keep the same tone everywhere. Professional, direct, educational or humorous.",
+      platforms: "Compatible with",
+    },
+  };
+
+  const tx = texts[lang as "fr" | "en"] || texts.fr;
+
   return (
     <div className="min-h-screen bg-slate-950 text-white">
-      <header className="border-b border-slate-800">
-        <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
-          <span className="font-bold text-xl text-violet-400">Stratify</span>
+      {/* Header */}
+      <header className="border-b border-slate-800/80 backdrop-blur sticky top-0 z-50 bg-slate-950/80">
+        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+          <Link href="/" className="font-bold text-xl text-violet-400 tracking-tight">
+            Stratify
+          </Link>
           <div className="flex items-center gap-3">
             <select
               value={lang}
               onChange={(e) => changeLang(e.target.value as Lang)}
-              className="text-xs bg-transparent border border-slate-700 rounded px-2 py-1"
+              className="text-xs bg-transparent border border-slate-700 rounded-lg px-2.5 py-1.5"
             >
               <option value="fr">Français</option>
               <option value="en">English</option>
@@ -43,8 +81,14 @@ export default function Home() {
               <option value="id">Bahasa</option>
             </select>
             <Link
+              href="/pricing"
+              className="hidden sm:inline text-sm text-slate-400 hover:text-white transition"
+            >
+              Pricing
+            </Link>
+            <Link
               href="/dashboard"
-              className="px-4 py-2 rounded-lg bg-violet-600 hover:bg-violet-500 text-sm font-medium"
+              className="px-4 py-2 rounded-lg bg-violet-600 hover:bg-violet-500 text-sm font-medium transition"
             >
               {String(t.studio)}
             </Link>
@@ -52,101 +96,86 @@ export default function Home() {
         </div>
       </header>
 
-      <main>
-        <section className="max-w-4xl mx-auto px-6 py-24 text-center">
-          <p className="text-violet-400 text-sm font-medium tracking-wide mb-4">
-            AI Content Strategy
+      {/* Hero */}
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-violet-950/40 via-transparent to-transparent pointer-events-none" />
+        <div className="max-w-4xl mx-auto px-6 pt-24 pb-20 text-center relative">
+          <p className="inline-flex items-center gap-2 text-violet-400 text-sm font-medium tracking-wide mb-6 px-3 py-1 rounded-full border border-violet-500/30 bg-violet-500/10">
+            {tx.badge}
           </p>
-          <h1 className="text-4xl sm:text-6xl font-bold leading-tight">
-            {lang === "fr" && <>1 contenu. <span className="text-violet-400">7 jours</span> de posts stratégiques.</>}
-            {lang === "en" && <>1 content. <span className="text-violet-400">7 days</span> of strategic posts.</>}
-            {lang === "es" && <>1 contenido. <span className="text-violet-400">7 días</span> de posts estratégicos.</>}
-            {lang === "pt" && <>1 conteúdo. <span className="text-violet-400">7 dias</span> de posts estratégicos.</>}
-            {lang === "zh" && <>1个内容。<span className="text-violet-400">7天</span>战略帖子。</>}
-            {lang === "hi" && <>1 सामग्री। <span className="text-violet-400">7 दिन</span> की रणनीतिक पोस्ट।</>}
-            {lang === "ar" && <>محتوى واحد. <span className="text-violet-400">7 أيام</span> من المنشورات الاستراتيجية.</>}
-            {lang === "de" && <>1 Inhalt. <span className="text-violet-400">7 Tage</span> strategische Posts.</>}
-            {lang === "ja" && <>1つのコンテンツ。<span className="text-violet-400">7日間</span>の戦略的投稿。</>}
-            {lang === "id" && <>1 konten. <span className="text-violet-400">7 hari</span> posting strategis.</>}
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold leading-tight tracking-tight">
+            {tx.title.split(".").map((part, i) =>
+              i === 0 ? (
+                <span key={i}>{part}.</span>
+              ) : (
+                <span key={i} className="text-violet-400">
+                  {part}
+                </span>
+              )
+            )}
           </h1>
-          <p className="mt-6 text-lg text-slate-400 max-w-2xl mx-auto">
-            {String(t.subtitle)}
+          <p className="mt-6 text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
+            {tx.subtitle}
           </p>
           <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/dashboard"
-              className="px-8 py-3.5 rounded-xl bg-violet-600 hover:bg-violet-500 font-medium"
+              className="px-8 py-3.5 rounded-xl bg-violet-600 hover:bg-violet-500 font-medium transition shadow-lg shadow-violet-900/30"
             >
-              {String(t.generate)}
+              {tx.cta}
             </Link>
-            <a
-              href="#features"
-              className="px-8 py-3.5 rounded-xl border border-slate-700 hover:bg-slate-900 font-medium"
+            <Link
+              href="/pricing"
+              className="px-8 py-3.5 rounded-xl border border-slate-700 hover:bg-slate-900 font-medium transition"
             >
-              {lang === "fr" ? "Voir comment ça marche" : 
-               lang === "en" ? "See how it works" :
-               lang === "es" ? "Ver cómo funciona" :
-               lang === "pt" ? "Ver como funciona" :
-               lang === "zh" ? "查看工作原理" :
-               lang === "hi" ? "देखें कैसे काम करता है" :
-               lang === "ar" ? "انظر كيف يعمل" :
-               lang === "de" ? "So funktioniert's" :
-               lang === "ja" ? "仕組みを見る" :
-               "Lihat cara kerjanya"}
-            </a>
+              {tx.secondary}
+            </Link>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section id="features" className="max-w-5xl mx-auto px-6 pb-24">
-          <div className="grid md:grid-cols-3 gap-6">
-            <div className="rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
-              <h3 className="font-semibold text-lg mb-2">{String(t.simple)}</h3>
-              <p className="text-slate-400 text-sm">
-                {lang === "fr" ? "Un contenu source, des posts prêts à publier pour chaque plateforme." :
-                 lang === "en" ? "One source content, ready-to-publish posts for each platform." :
-                 lang === "es" ? "Un contenido fuente, posts listos para publicar en cada plataforma." :
-                 lang === "pt" ? "Um conteúdo fonte, posts prontos para publicar em cada plataforma." :
-                 lang === "zh" ? "一个源内容，为每个平台准备好可发布的帖子。" :
-                 lang === "hi" ? "एक स्रोत सामग्री, प्रत्येक प्लेटफ़ॉर्म के लिए प्रकाशन के लिए तैयार पोस्ट।" :
-                 lang === "ar" ? "محتوى مصدر واحد، منشورات جاهزة للنشر لكل منصة." :
-                 lang === "de" ? "Ein Quellinhalt, veröffentlichungsbereite Posts für jede Plattform." :
-                 lang === "ja" ? "1つのソースコンテンツ、各プラットフォーム向けの公開準備済み投稿。" :
-                 "Satu konten sumber, posting siap terbit untuk setiap platform."}
-              </p>
+      {/* Platforms */}
+      <section className="max-w-4xl mx-auto px-6 pb-16 text-center">
+        <p className="text-xs text-slate-500 uppercase tracking-widest mb-4">{tx.platforms}</p>
+        <div className="flex flex-wrap justify-center gap-6 text-slate-400 text-sm font-medium">
+          <span>LinkedIn</span>
+          <span>Twitter / X</span>
+          <span>Instagram</span>
+          <span>TikTok</span>
+        </div>
+      </section>
+
+      {/* Features */}
+      <section className="max-w-5xl mx-auto px-6 pb-24">
+        <h2 className="text-2xl font-bold text-center mb-10">{tx.featuresTitle}</h2>
+        <div className="grid md:grid-cols-3 gap-6">
+          {[
+            { title: tx.f1Title, desc: tx.f1Desc },
+            { title: tx.f2Title, desc: tx.f2Desc },
+            { title: tx.f3Title, desc: tx.f3Desc },
+          ].map((f) => (
+            <div
+              key={f.title}
+              className="rounded-2xl border border-slate-800 bg-slate-900/40 p-6 hover:border-violet-500/40 transition"
+            >
+              <h3 className="font-semibold text-lg mb-2 text-violet-300">{f.title}</h3>
+              <p className="text-slate-400 text-sm leading-relaxed">{f.desc}</p>
             </div>
-            <div className="rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
-              <h3 className="font-semibold text-lg mb-2">{String(t.campaign)}</h3>
-              <p className="text-slate-400 text-sm">
-                {lang === "fr" ? "Teaser, valeur, preuve, conversation, CTA — une vraie stratégie." :
-                 lang === "en" ? "Teaser, value, proof, conversation, CTA — a real strategy." :
-                 lang === "es" ? "Teaser, valor, prueba, conversación, CTA — una verdadera estrategia." :
-                 lang === "pt" ? "Teaser, valor, prova, conversa, CTA — uma estratégia real." :
-                 lang === "zh" ? "预告、价值、证明、对话、行动号召——真正的策略。" :
-                 lang === "hi" ? "टीज़र, मूल्य, सबूत, बातचीत, CTA — एक वास्तविक रणनीति।" :
-                 lang === "ar" ? "إعلان تشويقي، قيمة، دليل، محادثة، دعوة للعمل — استراتيجية حقيقية." :
-                 lang === "de" ? "Teaser, Wert, Beweis, Gespräch, CTA — eine echte Strategie." :
-                 lang === "ja" ? "ティーザー、価値、証明、会話、CTA — 本物の戦略。" :
-                 "Teaser, nilai, bukti, percakapan, CTA — strategi yang nyata."}
-              </p>
-            </div>
-            <div className="rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
-              <h3 className="font-semibold text-lg mb-2">{String(t.brandVoice)}</h3>
-              <p className="text-slate-400 text-sm">
-                {lang === "fr" ? "Garde le même ton sur tous les réseaux. Professionnel, direct ou pédagogique." :
-                 lang === "en" ? "Keep the same tone across all networks. Professional, direct or educational." :
-                 lang === "es" ? "Mantén el mismo tono en todas las redes. Profesional, directo o educativo." :
-                 lang === "pt" ? "Mantenha o mesmo tom em todas as redes. Profissional, direto ou educacional." :
-                 lang === "zh" ? "在所有网络上保持相同的语气。专业、直接或教育性。" :
-                 lang === "hi" ? "सभी नेटवर्क पर एक ही टोन रखें। पेशेवर, सीधा या शैक्षिक।" :
-                 lang === "ar" ? "حافظ على نفس النبرة عبر جميع الشبكات. احترافي أو مباشر أو تعليمي." :
-                 lang === "de" ? "Behalte denselben Ton auf allen Netzwerken. Professionell, direkt oder lehrreich." :
-                 lang === "ja" ? "すべてのネットワークで同じトーンを保つ。プロフェッショナル、直接的、または教育的。" :
-                 "Pertahankan nada yang sama di semua jaringan. Profesional, langsung atau edukatif."}
-              </p>
-            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t border-slate-800 py-8">
+        <div className="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-500">
+          <span>© 2026 Stratify</span>
+          <div className="flex gap-6">
+            <Link href="/pricing" className="hover:text-white transition">Pricing</Link>
+            <Link href="/dashboard" className="hover:text-white transition">Studio</Link>
+            <Link href="/settings" className="hover:text-white transition">Settings</Link>
           </div>
-        </section>
-      </main>
+        </div>
+      </footer>
     </div>
   );
 }
