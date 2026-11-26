@@ -1,10 +1,13 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { translations, Lang } from "@/lib/translations";
+import { translations } from "@/lib/translations";
+import type { Lang } from "@/lib/translations";
 
 const LANG_KEY = "stratify_lang";
+const PLAN_KEY = "stratify_plan";
 
 type PricingContent = {
   title: string;
@@ -166,12 +169,15 @@ const content: Record<string, PricingContent> = {
 
 export default function PricingPage() {
   const [lang, setLang] = useState<Lang>("fr");
+
   const t = translations[lang] || translations.fr;
   const c = content[lang] || content.fr;
 
   useEffect(() => {
     const saved = localStorage.getItem(LANG_KEY) as Lang | null;
-    if (saved && translations[saved]) setLang(saved);
+    if (saved && translations[saved]) {
+      setLang(saved);
+    }
   }, []);
 
   const changeLang = (newLang: Lang) => {
@@ -181,30 +187,30 @@ export default function PricingPage() {
 
   const plans = [
     {
+      id: "free",
       name: c.free,
       price: "0",
       period: c.forever,
       features: c.featuresFree,
       cta: c.start,
-      href: "/dashboard",
       highlighted: false,
     },
     {
+      id: "pro",
       name: "Pro",
       price: "19",
       period: c.month,
       features: c.featuresPro,
       cta: c.goPro,
-      href: "/dashboard",
       highlighted: true,
     },
     {
+      id: "agency",
       name: "Agency",
       price: "49",
       period: c.month,
       features: c.featuresAgency,
       cta: c.chooseAgency,
-      href: "/dashboard",
       highlighted: false,
     },
   ];
@@ -216,6 +222,7 @@ export default function PricingPage() {
           <Link href="/" className="font-bold text-xl text-violet-400">
             Stratify
           </Link>
+
           <div className="flex items-center gap-3">
             <select
               value={lang}
@@ -233,6 +240,7 @@ export default function PricingPage() {
               <option value="ja">日本語</option>
               <option value="id">Bahasa</option>
             </select>
+
             <Link
               href="/dashboard"
               className="px-4 py-2 rounded-lg bg-violet-600 hover:bg-violet-500 text-sm font-medium"
@@ -252,7 +260,7 @@ export default function PricingPage() {
         <div className="grid md:grid-cols-3 gap-6">
           {plans.map((plan) => (
             <div
-              key={plan.name}
+              key={plan.id}
               className={`rounded-2xl border p-6 flex flex-col ${
                 plan.highlighted
                   ? "border-violet-500 bg-violet-950/30 relative"
@@ -264,21 +272,31 @@ export default function PricingPage() {
                   {c.popular}
                 </span>
               )}
+
               <h2 className="text-xl font-semibold">{plan.name}</h2>
+
               <div className="mt-4 mb-6">
                 <span className="text-4xl font-bold">${plan.price}</span>
                 <span className="text-slate-400 text-sm"> {plan.period}</span>
               </div>
+
               <ul className="space-y-3 mb-8 flex-1">
-                {plan.features.map((f) => (
-                  <li key={f} className="text-sm text-slate-300 flex items-start gap-2">
+                {plan.features.map((feature) => (
+                  <li
+                    key={feature}
+                    className="text-sm text-slate-300 flex items-start gap-2"
+                  >
                     <span className="text-violet-400">✓</span>
-                    {f}
+                    {feature}
                   </li>
                 ))}
               </ul>
+
               <Link
-                href={plan.href}
+                href="/dashboard"
+                onClick={() => {
+                  localStorage.setItem(PLAN_KEY, plan.id);
+                }}
                 className={`block text-center py-3 rounded-xl font-medium ${
                   plan.highlighted
                     ? "bg-violet-600 hover:bg-violet-500"
