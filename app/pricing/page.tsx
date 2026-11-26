@@ -6,7 +6,20 @@ import { translations, Lang } from "@/lib/translations";
 
 const LANG_KEY = "stratify_lang";
 
-const content: Record<string, any> = {
+const content: Record<string, {
+  title: string;
+  subtitle: string;
+  free: string;
+  forever: string;
+  popular: string;
+  month: string;
+  start: string;
+  goPro: string;
+  chooseAgency: string;
+  featuresFree: string[];
+  featuresPro: string[];
+  featuresAgency: string[];
+}> = {
   fr: {
     title: "Choisis ton plan",
     subtitle: "Commence gratuitement. Passe à Pro quand tu veux.",
