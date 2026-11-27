@@ -6,19 +6,19 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint",
-    "postinstall": "prisma skills sync || exit 0"
+    "lint": "eslint"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.39.8",
+    "@google/genai": "^3.6.1",
     "@prisma/client": "^6.19.3",
     "clsx": "^2.1.1",
     "date-fns": "^4.4.0",
     "lucide-react": "^1.71.0",
-    "next": "15.5.28",
-    "openai": "^4.104.0",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
+    "next": "^15.5.29",
+    "openai": "^7.65.0",
+    "react": "^19.1.4",
+    "react-dom": "^19.1.4",
     "sonner": "^2.0.8",
     "svix": "^1.99.1",
     "tailwind-merge": "^3.7.0",
@@ -31,9 +31,14 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "15.5.28",
+    "eslint-config-next": "^15.5.29",
     "prisma": "^6.19.3",
     "tailwindcss": "^4",
     "typescript": "^5"
+  },
+  "overrides": {
+    "postcss": "8.5.34",
+    "effect": "3.22.5",
+    "deepmerge-ts": "8.0.2"
   }
 }
