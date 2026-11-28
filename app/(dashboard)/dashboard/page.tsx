@@ -481,7 +481,7 @@ export default function DashboardPage() {
 
         {mode === "simple" && (
           <div className="mb-4">
-            <label className="text-sm text-slate-400 block mb-2">Platforms</label>
+            <label className="text-sm text-slate-400 block mb-2">{String(t.platforms)}</label>
             <div className="flex flex-wrap gap-2">
               {PLATFORMS.map((p) => (
                 <button

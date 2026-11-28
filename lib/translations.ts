@@ -2,6 +2,9 @@ export type Lang = "fr" | "en" | "es" | "pt" | "zh" | "hi" | "ar" | "de" | "ja" 
 
 export const translations: Record<Lang, { [key: string]: string | string[] }> = {
   fr: {
+    platforms: "Plateformes",
+    settings: "Paramètres",
+    pricing: "Tarifs",
     studio: "Studio",
     subtitle: "1 contenu → posts multi-plateformes",
     simple: "Simple",
@@ -44,6 +47,9 @@ export const translations: Record<Lang, { [key: string]: string | string[] }> = 
     dark: "Sombre",
   },
   en: {
+    platforms: "Platforms",
+    settings: "Settings",
+    pricing: "Pricing",
     studio: "Studio",
     subtitle: "1 content → multi-platform posts",
     simple: "Simple",
@@ -86,6 +92,9 @@ export const translations: Record<Lang, { [key: string]: string | string[] }> = 
     dark: "Dark",
   },
   es: {
+    platforms: "Plataformas",
+    settings: "Configuración",
+    pricing: "Precios",
     studio: "Estudio",
     subtitle: "1 contenido → posts multiplataforma",
     simple: "Simple",
@@ -128,6 +137,9 @@ export const translations: Record<Lang, { [key: string]: string | string[] }> = 
     dark: "Oscuro",
   },
   pt: {
+    platforms: "Plataformas",
+    settings: "Configurações",
+    pricing: "Preços",
     studio: "Estúdio",
     subtitle: "1 conteúdo → posts multiplataforma",
     simple: "Simples",
@@ -170,6 +182,9 @@ export const translations: Record<Lang, { [key: string]: string | string[] }> = 
     dark: "Escuro",
   },
   zh: {
+    platforms: "平台",
+    settings: "设置",
+    pricing: "价格",
     studio: "工作室",
     subtitle: "1个内容 → 多平台帖子",
     simple: "简单",
@@ -212,6 +227,9 @@ export const translations: Record<Lang, { [key: string]: string | string[] }> = 
     dark: "深色",
   },
   hi: {
+    platforms: "प्लेटफ़ॉर्म",
+    settings: "सेटिंग्स",
+    pricing: "मूल्य",
     studio: "स्टूडियो",
     subtitle: "1 सामग्री → मल्टी-प्लेटफ़ॉर्म पोस्ट",
     simple: "सरल",
@@ -254,6 +272,9 @@ export const translations: Record<Lang, { [key: string]: string | string[] }> = 
     dark: "डार्क",
   },
   ar: {
+    platforms: "المنصات",
+    settings: "الإعدادات",
+    pricing: "الأسعار",
     studio: "استوديو",
     subtitle: "محتوى واحد → منشورات متعددة المنصات",
     simple: "بسيط",
@@ -296,6 +317,9 @@ export const translations: Record<Lang, { [key: string]: string | string[] }> = 
     dark: "داكن",
   },
   de: {
+    platforms: "Plattformen",
+    settings: "Einstellungen",
+    pricing: "Preise",
     studio: "Studio",
     subtitle: "1 Inhalt → Multi-Plattform-Posts",
     simple: "Einfach",
@@ -338,6 +362,9 @@ export const translations: Record<Lang, { [key: string]: string | string[] }> = 
     dark: "Dunkel",
   },
   ja: {
+    platforms: "プラットフォーム",
+    settings: "設定",
+    pricing: "料金",
     studio: "スタジオ",
     subtitle: "1つのコンテンツ → マルチプラットフォーム投稿",
     simple: "シンプル",
@@ -380,6 +407,9 @@ export const translations: Record<Lang, { [key: string]: string | string[] }> = 
     dark: "ダーク",
   },
   id: {
+    platforms: "Platform",
+    settings: "Pengaturan",
+    pricing: "Harga",
     studio: "Studio",
     subtitle: "1 konten → posting multi-platform",
     simple: "Sederhana",

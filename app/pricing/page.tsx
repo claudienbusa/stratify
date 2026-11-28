@@ -7,7 +7,6 @@ import { translations } from "@/lib/translations";
 import type { Lang } from "@/lib/translations";
 
 const LANG_KEY = "stratify_lang";
-const PLAN_KEY = "stratify_plan";
 
 type PricingContent = {
   title: string;
@@ -37,7 +36,7 @@ const content: Record<string, PricingContent> = {
     chooseAgency: "Choisir Agency",
     featuresFree: ["5 générations / mois", "Mode Simple", "Historique 7 jours", "1 Brand Voice"],
     featuresPro: ["100 générations / mois", "Mode Simple + Campagne", "Historique illimité", "Brand Voices illimitées", "Export TXT", "Support prioritaire"],
-    featuresAgency: ["Générations illimitées", "Tout du plan Pro", "Export PDF + Notion", "Planification des posts", "Mode Variants", "Accès anticipé aux nouveautés"],
+    featuresAgency: ["400 générations / mois", "Tout du plan Pro", "Export PDF + Notion", "Planification des posts", "Mode Variants", "Accès anticipé aux nouveautés"],
   },
   en: {
     title: "Choose your plan",
@@ -51,7 +50,7 @@ const content: Record<string, PricingContent> = {
     chooseAgency: "Choose Agency",
     featuresFree: ["5 generations / month", "Simple mode", "7-day history", "1 Brand Voice"],
     featuresPro: ["100 generations / month", "Simple + Campaign mode", "Unlimited history", "Unlimited Brand Voices", "TXT export", "Priority support"],
-    featuresAgency: ["Unlimited generations", "Everything in Pro", "PDF + Notion export", "Post scheduling", "Variants mode", "Early access to new features"],
+    featuresAgency: ["400 generations / month", "Everything in Pro", "PDF + Notion export", "Post scheduling", "Variants mode", "Early access to new features"],
   },
   es: {
     title: "Elige tu plan",
@@ -65,7 +64,7 @@ const content: Record<string, PricingContent> = {
     chooseAgency: "Elegir Agency",
     featuresFree: ["5 generaciones / mes", "Modo Simple", "Historial 7 días", "1 Brand Voice"],
     featuresPro: ["100 generaciones / mes", "Modo Simple + Campaña", "Historial ilimitado", "Brand Voices ilimitadas", "Exportar TXT", "Soporte prioritario"],
-    featuresAgency: ["Generaciones ilimitadas", "Todo del plan Pro", "Exportar PDF + Notion", "Planificación de posts", "Modo Variants", "Acceso anticipado"],
+    featuresAgency: ["400 generaciones / mes", "Todo del plan Pro", "Exportar PDF + Notion", "Planificación de posts", "Modo Variants", "Acceso anticipado"],
   },
   pt: {
     title: "Escolha seu plano",
@@ -79,7 +78,7 @@ const content: Record<string, PricingContent> = {
     chooseAgency: "Escolher Agency",
     featuresFree: ["5 gerações / mês", "Modo Simples", "Histórico 7 dias", "1 Brand Voice"],
     featuresPro: ["100 gerações / mês", "Modo Simples + Campanha", "Histórico ilimitado", "Brand Voices ilimitadas", "Exportar TXT", "Suporte prioritário"],
-    featuresAgency: ["Gerações ilimitadas", "Tudo do plano Pro", "Exportar PDF + Notion", "Agendamento de posts", "Modo Variants", "Acesso antecipado"],
+    featuresAgency: ["400 gerações / mês", "Tudo do plano Pro", "Exportar PDF + Notion", "Agendamento de posts", "Modo Variants", "Acesso antecipado"],
   },
   de: {
     title: "Wähle deinen Plan",
@@ -93,7 +92,7 @@ const content: Record<string, PricingContent> = {
     chooseAgency: "Agency wählen",
     featuresFree: ["5 Generierungen / Monat", "Einfacher Modus", "7-Tage Verlauf", "1 Brand Voice"],
     featuresPro: ["100 Generierungen / Monat", "Einfach + Kampagne", "Unbegrenzter Verlauf", "Unbegrenzte Brand Voices", "TXT Export", "Prioritäts-Support"],
-    featuresAgency: ["Unbegrenzte Generierungen", "Alles aus Pro", "PDF + Notion Export", "Post-Planung", "Variants-Modus", "Früher Zugang"],
+    featuresAgency: ["400 Generierungen / Monat", "Alles aus Pro", "PDF + Notion Export", "Post-Planung", "Variants-Modus", "Früher Zugang"],
   },
   zh: {
     title: "选择你的计划",
@@ -107,7 +106,7 @@ const content: Record<string, PricingContent> = {
     chooseAgency: "选择 Agency",
     featuresFree: ["每月5次生成", "简单模式", "7天历史", "1个品牌声音"],
     featuresPro: ["每月100次生成", "简单+活动模式", "无限历史", "无限品牌声音", "TXT导出", "优先支持"],
-    featuresAgency: ["无限生成", "Pro全部功能", "PDF + Notion导出", "帖子计划", "变体模式", "抢先体验"],
+    featuresAgency: ["每月400次生成", "Pro全部功能", "PDF + Notion导出", "帖子计划", "变体模式", "抢先体验"],
   },
   ja: {
     title: "プランを選択",
@@ -121,7 +120,7 @@ const content: Record<string, PricingContent> = {
     chooseAgency: "Agencyを選択",
     featuresFree: ["月5回生成", "シンプルモード", "7日間履歴", "1ブランドボイス"],
     featuresPro: ["月100回生成", "シンプル+キャンペーン", "無制限履歴", "無制限ブランドボイス", "TXTエクスポート", "優先サポート"],
-    featuresAgency: ["無制限生成", "Proの全機能", "PDF + Notionエクスポート", "投稿スケジュール", "バリアントモード", "早期アクセス"],
+    featuresAgency: ["月400回生成", "Proの全機能", "PDF + Notionエクスポート", "投稿スケジュール", "バリアントモード", "早期アクセス"],
   },
   ar: {
     title: "اختر خطتك",
@@ -135,7 +134,7 @@ const content: Record<string, PricingContent> = {
     chooseAgency: "اختر Agency",
     featuresFree: ["5 توليد / شهر", "الوضع البسيط", "سجل 7 أيام", "صوت علامة واحد"],
     featuresPro: ["100 توليد / شهر", "بسيط + حملة", "سجل غير محدود", "أصوات علامة غير محدودة", "تصدير TXT", "دعم أولوية"],
-    featuresAgency: ["توليد غير محدود", "كل ما في Pro", "تصدير PDF + Notion", "جدولة المنشورات", "وضع المتغيرات", "وصول مبكر"],
+    featuresAgency: ["400 توليد / شهر", "كل ما في Pro", "تصدير PDF + Notion", "جدولة المنشورات", "وضع المتغيرات", "وصول مبكر"],
   },
   hi: {
     title: "अपना प्लान चुनें",
@@ -149,7 +148,7 @@ const content: Record<string, PricingContent> = {
     chooseAgency: "Agency चुनें",
     featuresFree: ["5 जनरेशन / महीना", "सिंपल मोड", "7 दिन का इतिहास", "1 ब्रांड वॉयस"],
     featuresPro: ["100 जनरेशन / महीना", "सिंपल + कैंपेन", "असीमित इतिहास", "असीमित ब्रांड वॉयस", "TXT एक्सपोर्ट", "प्राथमिकता सपोर्ट"],
-    featuresAgency: ["असीमित जनरेशन", "Pro की सभी सुविधाएं", "PDF + Notion एक्सपोर्ट", "पोस्ट शेड्यूलिंग", "वेरिएंट मोड", "अर्ली एक्सेस"],
+    featuresAgency: ["400 जनरेशन / महीना", "Pro की सभी सुविधाएं", "PDF + Notion एक्सपोर्ट", "पोस्ट शेड्यूलिंग", "वेरिएंट मोड", "अर्ली एक्सेस"],
   },
   id: {
     title: "Pilih paketmu",
@@ -163,7 +162,7 @@ const content: Record<string, PricingContent> = {
     chooseAgency: "Pilih Agency",
     featuresFree: ["5 generasi / bulan", "Mode Sederhana", "Riwayat 7 hari", "1 Brand Voice"],
     featuresPro: ["100 generasi / bulan", "Mode Sederhana + Kampanye", "Riwayat tak terbatas", "Brand Voice tak terbatas", "Ekspor TXT", "Dukungan prioritas"],
-    featuresAgency: ["Generasi tak terbatas", "Semua fitur Pro", "Ekspor PDF + Notion", "Penjadwalan post", "Mode Variants", "Akses awal"],
+    featuresAgency: ["400 generasi / bulan", "Semua fitur Pro", "Ekspor PDF + Notion", "Penjadwalan post", "Mode Variants", "Akses awal"],
   },
 };
 
@@ -277,7 +276,7 @@ export default function PricingPage() {
 
               <div className="mt-4 mb-6">
                 <span className="text-4xl font-bold">${plan.price}</span>
-                <span className="text-slate-400 text-sm"> {plan.period}</span>
+                <span className="text-slate-400 text-sm"> {plan.period} · USD</span>
               </div>
 
               <ul className="space-y-3 mb-8 flex-1">
@@ -292,19 +291,22 @@ export default function PricingPage() {
                 ))}
               </ul>
 
-              <Link
-                href="/dashboard"
-                onClick={() => {
-                  localStorage.setItem(PLAN_KEY, plan.id);
-                }}
-                className={`block text-center py-3 rounded-xl font-medium ${
-                  plan.highlighted
-                    ? "bg-violet-600 hover:bg-violet-500"
-                    : "border border-slate-700 hover:bg-slate-800"
-                }`}
-              >
-                {plan.cta}
-              </Link>
+{plan.id === "free" ? (
+  <Link
+    href="/dashboard"
+    className="block text-center py-3 rounded-xl font-medium border border-slate-700 hover:bg-slate-800"
+  >
+    {plan.cta}
+  </Link>
+) : (
+  <button
+    type="button"
+    disabled
+    className="block w-full text-center py-3 rounded-xl font-medium bg-slate-800 text-slate-400 cursor-not-allowed"
+  >
+    Bientôt disponible
+  </button>
+)}
             </div>
           ))}
         </div>

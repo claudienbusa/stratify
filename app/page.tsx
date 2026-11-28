@@ -84,7 +84,7 @@ export default function Home() {
               href="/pricing"
               className="hidden sm:inline text-sm text-slate-400 hover:text-white transition"
             >
-              Pricing
+              {t.pricing}
             </Link>
             <Link
               href="/dashboard"
@@ -170,9 +170,9 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-500">
           <span>© 2026 Stratify</span>
           <div className="flex gap-6">
-            <Link href="/pricing" className="hover:text-white transition">Pricing</Link>
-            <Link href="/dashboard" className="hover:text-white transition">Studio</Link>
-            <Link href="/settings" className="hover:text-white transition">Settings</Link>
+            <Link href="/pricing" className="hover:text-white transition">{t.pricing}</Link>
+            <Link href="/dashboard" className="hover:text-white transition">{t.studio}</Link>
+            <Link href="/settings" className="hover:text-white transition">{t.settings}</Link>
           </div>
         </div>
       </footer>
